@@ -6,13 +6,13 @@ import svg2png from 'svg2png'
 export default {
     convertLabelSVGToPNG(label) {
         let conversions = [];
-        if (label.frontLabelSVG) {
+        if (label.frontLabelSVG && label.frontLabelSVG !== '') {
             conversions.push(this.convert(label.frontLabelSVG));
         }
-        if (label.backLabelSVG) {
+        if (label.backLabelSVG && label.backLabelSVG !== '') {
             conversions.push(this.convert(label.backLabelSVG));
         }
-        if (label.neckLabelSVG) {
+        if (label.neckLabelSVG && label.neckLabelSVG !== '') {
             conversions.push(this.convert(label.neckLabelSVG));
         }
         return conversions;

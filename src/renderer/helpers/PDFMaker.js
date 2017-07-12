@@ -7,7 +7,8 @@ const shell = require('electron').shell;
 
 let FICHES = {
     classic: {
-        c: require('@/printers/classic/c.json')
+        c: require('@/printers/classic/c.json'),
+        b: require('@/printers/classic/b.json'),
     }
 };
 

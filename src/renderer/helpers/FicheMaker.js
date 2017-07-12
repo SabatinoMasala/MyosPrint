@@ -32,13 +32,21 @@ export default {
 
         labels.forEach((label) => {
             for (let i = 0; i < label.amount; i++) {
-                let regex = /[^\/]+\.svg/;
-                let front = regex.exec(label.frontLabelSVG)[0].replace('.svg', '.png');
-                let back = regex.exec(label.backLabelSVG)[0].replace('.svg', '.png');
-                let neck = regex.exec(label.neckLabelSVG)[0].replace('.svg', '.png');
-                pages[currentPageIndex].neck.push( Dir.getImagesDir() + '/' + neck );
+                let regex = /[^\/]+\.(svg|png)/;
+
+                let frontLabelFile = (label.frontLabelSVG && label.frontLabelSVG !== '') ? label.frontLabelSVG : label.frontLabelImage;
+                let backLabelFile = (label.backLabelSVG && label.backLabelSVG !== '') ? label.backLabelSVG : label.backLabelImage;
+                let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
+
+                let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
+                let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
                 pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
                 pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+
+                if (neckLabelFile && neckLabelFile !== '') {
+                    let neck = regex.exec(neckLabelFile)[0].replace('.svg', '.png');
+                    pages[currentPageIndex].neck.push( Dir.getImagesDir() + '/' + neck );
+                }
 
                 if (pages[currentPageIndex].neck.length >= 5 || pages[currentPageIndex].back.length >= 5 ||  pages[currentPageIndex].front.length >= 5) {
                     pages.push({

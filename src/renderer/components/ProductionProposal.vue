@@ -34,7 +34,10 @@
                 <el-table-column
                         label="Operations">
                     <template scope="scope">
-                        <el-button type="primary" size="small" @click="makePDF(scope.$index)">Get PDF</el-button>
+                        <el-button :disabled="isDisabledButton(scope.$index)" type="primary" size="small" @click="makePDF(scope.$index)">
+                            <span v-if="!isDisabledButton(scope.$index)">Get PDF</span>
+                            <span v-else>This template is not available</span>
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -96,6 +99,14 @@
                 })
         },
         methods: {
+            isDisabledButton(index) {
+                if (this.fiches.length > 0) {
+                    if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c') {
+                        return false;
+                    }
+                    return true;
+                }
+            },
             startDownload() {
                 let downloads = [];
                 this.labels.forEach((label) => {
