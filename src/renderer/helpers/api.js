@@ -1,0 +1,1 @@
+export default 'http://backend.myos.dev/api'
