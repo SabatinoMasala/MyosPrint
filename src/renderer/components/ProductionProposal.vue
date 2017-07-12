@@ -23,7 +23,7 @@
                 <el-table-column
                         label="Operations">
                     <template scope="scope">
-                        <el-button type="primary" size="small" @click="makePDF()">Get PDF</el-button>
+                        <el-button type="primary" size="small" @click="makePDF(scope.$index)">Get PDF</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -36,8 +36,11 @@
     import sharp from 'sharp'
     import _ from 'lodash'
     import API from '@/helpers/api'
+    import Dir from '@/helpers/Dir'
     import FicheMaker from '@/helpers/FicheMaker'
     import PDFMaker from '@/helpers/PDFMaker'
+    import Download from '@/helpers/Download'
+    import SVGConvert from '@/helpers/SVGConvert'
 
     export default {
         computed: {
@@ -46,13 +49,15 @@
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
-                    console.log(proposal.orderBottle.designedBottle);
                     return {
                         amount:proposal.orderBottle.amount,
                         size: proposal.orderBottle.designedBottle.label.size.toLowerCase(),
-                        frontLabel: proposal.orderBottle.designedBottle.frontLabel,
-                        backLabel: proposal.orderBottle.designedBottle.backLabel,
-                        neckLabel: proposal.orderBottle.designedBottle.neckLabel,
+                        frontLabelImage: proposal.orderBottle.designedBottle.frontLabel,
+                        backLabelImage: proposal.orderBottle.designedBottle.backLabel,
+                        neckLabelImage: proposal.orderBottle.designedBottle.neckLabel,
+                        frontLabelSVG: proposal.orderBottle.designedBottle.frontLabelSVG,
+                        backLabelSVG: proposal.orderBottle.designedBottle.backLabelSVG,
+                        neckLabelSVG: proposal.orderBottle.designedBottle.neckLabelSVG,
                     };
                 })
             },
@@ -73,16 +78,107 @@
             });
             this.$http.get(API + '/production-proposals/' + this.productionProposalID)
                 .then((response) => {
-                     this.productionProposal = response.data['production-proposal'];
-                     this.loading = false;
+                    this.productionProposal = response.data['production-proposal'];
+                    this.startDownload();
                 })
                 .catch((error) => {
                 })
         },
         methods: {
-            makePDF() {
+            startDownload() {
+                let downloads = [];
+                this.labels.forEach((label) => {
+                    downloads.push(
+                        Promise.all(Download.downloadSVGFromLabel(label))
+                    );
+                });
+                Promise.all(downloads).then(() => {
+                    let conversions = [];
+                    this.labels.forEach((label) => {
+                        conversions.push(
+                            Promise.all(SVGConvert.convertLabelSVGToPNG(label))
+                        );
+                    });
+                    return Promise.all(conversions)
+                }).then(() => {
+                    this.loading = false;
+                }).error((e) => {
+                    console.log(e);
+                })
+            },
+            makePDF(index) {
+                let pages = [
+                {
+                    front: [
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                    ],
+                    back: [
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                    ],
+                    neck: [
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                    ]
+                },
+                {
+                    front: [
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                    ],
+                    back: [
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                    ],
+                    neck: [
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                    ]
+                },
+                {
+                    front: [
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
+                    ],
+                    back: [
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
+                    ],
+                    neck: [
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
+                    ]
+                }];
                 this.loading = true;
-                PDFMaker.makePDF().then(() => {
+                PDFMaker.makePDF(pages).then(() => {
                     this.loading = false;
                 })
             },

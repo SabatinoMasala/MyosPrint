@@ -10,7 +10,7 @@ export default {
     addImage(doc, image, position, dimensions) {
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
-                let buffer = sharp(image).rotate(position.rotation).toBuffer().then((data) => {
+                sharp(image).rotate(position.rotation).toBuffer().then((data) => {
                     let width = dimensions.width;
                     let height = dimensions.height;
 
@@ -43,78 +43,38 @@ export default {
             }
         })
     },
-    makePDF() {
+
+    // This needs to be a recursive function instead of a for-loop because of race conditions with page creation
+    makeNextPage(pages, doc, index, createNewPageFirst, allDoneCallback) {
+        let page = pages[index];
+        if (!!createNewPageFirst) {
+            doc.addPage();
+        }
+        let promises = [];
+        Object.keys(page).forEach((part) => {
+            page[part].forEach((image, index) => {
+                let position = fiche_c.slots[part][index];
+                let dimensions = fiche_c.dimensions[part];
+                promises.push(this.addImage(doc, image, position, dimensions))
+            })
+        });
+        Promise.all(promises).then(() => {
+            if (pages.length - 1 > index) {
+                this.makeNextPage(pages, doc, index + 1, true, allDoneCallback)
+            } else {
+                allDoneCallback();
+            }
+        })
+    },
+    makePDF(pages) {
 
         let doc = new PDFDocument({
             margin: 0,
             size: 'a3'
         });
 
-        let fiches = [
-            {
-                front: [
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                ],
-                back: [
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                ],
-                neck: [
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                ]
-            },
-            {
-                front: [
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                    Dir.getImagesDir() + '/1.png',
-                ],
-                back: [
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                    Dir.getImagesDir() + '/3.png',
-                ],
-                neck: [
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                    Dir.getImagesDir() + '/2.png',
-                ]
-            }];
-
-        let promises = [];
-
-        fiches.forEach((fiche, index) => {
-            if (index > 0) {
-                doc.addPage();
-            }
-            Object.keys(fiche).forEach((part) => {
-                fiche[part].forEach((image, index) => {
-                    let position = fiche_c.slots[part][index];
-                    let dimensions = fiche_c.dimensions[part];
-                    promises.push(this.addImage(doc, image, position, dimensions))
-                })
-            });
-        });
-
         return new Promise((resolve, reject) => {
-            Promise.all(promises).then(() => {
+            this.makeNextPage(pages, doc, 0, false, () => {
                 let path = Dir.getPDFDir() + '/file.pdf';
                 let file = fs.createWriteStream(path);
                 doc.pipe(file);
@@ -123,7 +83,7 @@ export default {
                     shell.openItem(path);
                     resolve();
                 })
-            })
-        })
+            });
+        });
     }
 }
