@@ -10,14 +10,25 @@
 
         <div style="margin: 50px;">
             <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
-            <h2>Fiches</h2>
+            <h2>
+                Fiches
+                <el-select v-model="printer" placeholder="Select">
+                    <el-option
+                            v-for="item in printerOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :disabled="item.disabled"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </h2>
             <el-table :data="fiches" empty-text="No fiches" v-loading.body="loading">
                 <el-table-column
                         prop="size"
                         label="Size">
                 </el-table-column>
                 <el-table-column
-                        prop="pages"
+                        prop="pages_count"
                         label="Number of pages">
                 </el-table-column>
                 <el-table-column
@@ -107,78 +118,9 @@
                 })
             },
             makePDF(index) {
-                let pages = [
-                {
-                    front: [
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                    ],
-                    back: [
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                    ],
-                    neck: [
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                    ]
-                },
-                {
-                    front: [
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                    ],
-                    back: [
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                    ],
-                    neck: [
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                    ]
-                },
-                {
-                    front: [
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                        Dir.getImagesDir() + '/0f48228aeae3ec73d2f45a9572dfd807.png',
-                    ],
-                    back: [
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                        Dir.getImagesDir() + '/30c4692ab994fc0e9ed000e88a8423a0.png',
-                    ],
-                    neck: [
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                        Dir.getImagesDir() + '/3254058dacfb73c65ec89f8eb5a112a3.png',
-                    ]
-                }];
                 this.loading = true;
-                PDFMaker.makePDF(pages).then(() => {
+                let filename = this.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
+                PDFMaker.makePDF( this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
                     this.loading = false;
                 })
             },
@@ -190,13 +132,21 @@
         },
         data() {
             return {
+                printer: 'classic',
+                printerOptions: [
+                    {
+                        value: 'classic',
+                        label: 'Classic printer',
+                    },
+                    {
+                        value: 'roll',
+                        label: 'Roll printer (TODO)',
+                        disabled: true
+                    }
+                ],
                 loading: true,
                 productionProposalID: this.$route.params.proposal_id,
                 productionProposal: false,
-                tableData: [{
-                    fiche: '2016-05-03',
-                    bottle_amount: 100,
-                }]
             }
         }
     }

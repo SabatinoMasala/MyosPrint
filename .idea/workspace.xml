@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4012c662-9c84-407f-9502-f032b58979e6" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/renderer/helpers/Download.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/renderer/helpers/SVGConvert.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue" afterPath="$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/renderer/helpers/Dir.js" afterPath="$PROJECT_DIR$/src/renderer/helpers/Dir.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js" afterPath="$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/renderer/helpers/PDFMaker.js" afterPath="$PROJECT_DIR$/src/renderer/helpers/PDFMaker.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,25 +16,25 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ProductionProposal.vue" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ProductionProposal.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="624">
-              <caret line="166" column="54" lean-forward="false" selection-start-line="166" selection-start-column="54" selection-end-line="166" selection-end-column="54" />
+            <state relative-caret-position="264">
+              <caret line="121" column="46" lean-forward="false" selection-start-line="121" selection-start-column="46" selection-end-line="121" selection-end-column="46" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#strong#0;n#h1#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-                <element signature="e#1223#1248#0" expanded="true" />
+                <element signature="e#1675#1700#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PDFMaker.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PDFMaker.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/renderer/helpers/PDFMaker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="46" column="112" lean-forward="false" selection-start-line="46" selection-start-column="112" selection-end-line="46" selection-end-column="112" />
+            <state relative-caret-position="294">
+              <caret line="60" column="46" lean-forward="false" selection-start-line="60" selection-start-column="46" selection-end-line="60" selection-end-column="46" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
               </folding>
@@ -83,8 +79,8 @@
       <file leaf-file-name="SVGConvert.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/renderer/helpers/SVGConvert.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="17" column="27" lean-forward="false" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
+            <state relative-caret-position="315">
+              <caret line="21" column="12" lean-forward="false" selection-start-line="21" selection-start-column="12" selection-end-line="24" selection-end-column="79" />
               <folding>
                 <element signature="e#0#31#0" expanded="true" />
               </folding>
@@ -105,9 +101,11 @@
       <file leaf-file-name="FicheMaker.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="4" column="33" lean-forward="false" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
-              <folding />
+            <state relative-caret-position="240">
+              <caret line="16" column="41" lean-forward="false" selection-start-line="16" selection-start-column="41" selection-end-line="16" selection-end-column="41" />
+              <folding>
+                <element signature="e#0#22#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -116,12 +114,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>store</find>
-      <find>axios</find>
-      <find>App</find>
-      <find>src</find>
-      <find>alias</find>
-      <find>click</find>
       <find>debugger</find>
       <find>_b</find>
       <find>fiche_b</find>
@@ -146,6 +138,12 @@
       <find>index</find>
       <find>doc</find>
       <find>.then</find>
+      <find>makePDF</find>
+      <find>pdf(</find>
+      <find>fiche_c</find>
+      <find>makenextpage</find>
+      <find>FICHES</find>
+      <find>back b</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -160,14 +158,14 @@
         <option value="$PROJECT_DIR$/src/index.ejs" />
         <option value="$PROJECT_DIR$/src/renderer/App.vue" />
         <option value="$PROJECT_DIR$/src/renderer/components/Home.vue" />
-        <option value="$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js" />
         <option value="$PROJECT_DIR$/src/renderer/helpers/Setup.js" />
         <option value="$PROJECT_DIR$/src/renderer/main.js" />
         <option value="$PROJECT_DIR$/src/renderer/helpers/SVGConvert.js" />
         <option value="$PROJECT_DIR$/src/renderer/helpers/Download.js" />
-        <option value="$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue" />
         <option value="$PROJECT_DIR$/src/renderer/helpers/Dir.js" />
+        <option value="$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js" />
         <option value="$PROJECT_DIR$/src/renderer/helpers/PDFMaker.js" />
+        <option value="$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue" />
       </list>
     </option>
   </component>
@@ -319,12 +317,12 @@
       <option name="presentableId" value="Default" />
       <updated>1499850268968</updated>
       <workItem from="1499850270128" duration="156000" />
-      <workItem from="1499850434945" duration="13275000" />
+      <workItem from="1499850434945" duration="14681000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13431000" />
+    <option name="totallyTimeSpent" value="14837000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="2560" height="1413" extended-state="6" />
@@ -521,29 +519,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="33" lean-forward="false" selection-start-line="4" selection-start-column="33" selection-end-line="4" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="295">
           <caret line="64" column="9" lean-forward="false" selection-start-line="64" selection-start-column="5" selection-end-line="64" selection-end-column="9" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/helpers/SVGConvert.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="27" lean-forward="false" selection-start-line="17" selection-start-column="27" selection-end-line="17" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#31#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -553,18 +533,6 @@
           <caret line="17" column="22" lean-forward="false" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
           <folding>
             <element signature="e#0#31#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="624">
-          <caret line="166" column="54" lean-forward="false" selection-start-line="166" selection-start-column="54" selection-end-line="166" selection-end-column="54" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#strong#0;n#h1#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="e#1223#1248#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -579,12 +547,44 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/helpers/SVGConvert.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="21" column="12" lean-forward="false" selection-start-line="21" selection-start-column="12" selection-end-line="24" selection-end-column="79" />
+          <folding>
+            <element signature="e#0#31#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/helpers/FicheMaker.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="41" lean-forward="false" selection-start-line="16" selection-start-column="41" selection-end-line="16" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#22#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/helpers/PDFMaker.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="46" column="112" lean-forward="false" selection-start-line="46" selection-start-column="112" selection-end-line="46" selection-end-column="112" />
+        <state relative-caret-position="294">
+          <caret line="60" column="46" lean-forward="false" selection-start-line="60" selection-start-column="46" selection-end-line="60" selection-end-column="46" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/renderer/components/ProductionProposal.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="121" column="46" lean-forward="false" selection-start-line="121" selection-start-column="46" selection-end-line="121" selection-end-column="46" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#strong#0;n#h1#0;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="e#1675#1700#0" expanded="true" />
           </folding>
         </state>
       </provider>

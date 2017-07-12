@@ -3,8 +3,13 @@ import sharp from 'sharp'
 import Promise from 'bluebird'
 import fs from 'fs'
 import Dir from '@/helpers/Dir'
-import fiche_c from '@/printers/classic/c.json'
 const shell = require('electron').shell;
+
+let FICHES = {
+    classic: {
+        c: require('@/printers/classic/c.json')
+    }
+};
 
 export default {
     addImage(doc, image, position, dimensions) {
@@ -45,7 +50,7 @@ export default {
     },
 
     // This needs to be a recursive function instead of a for-loop because of race conditions with page creation
-    makeNextPage(pages, doc, index, createNewPageFirst, allDoneCallback) {
+    makeNextPage(pages, doc, size, index, createNewPageFirst, allDoneCallback) {
         let page = pages[index];
         if (!!createNewPageFirst) {
             doc.addPage();
@@ -53,20 +58,20 @@ export default {
         let promises = [];
         Object.keys(page).forEach((part) => {
             page[part].forEach((image, index) => {
-                let position = fiche_c.slots[part][index];
-                let dimensions = fiche_c.dimensions[part];
+                let position = FICHES['classic'][size].slots[part][index];
+                let dimensions = FICHES['classic'][size].dimensions[part];
                 promises.push(this.addImage(doc, image, position, dimensions))
             })
         });
         Promise.all(promises).then(() => {
             if (pages.length - 1 > index) {
-                this.makeNextPage(pages, doc, index + 1, true, allDoneCallback)
+                this.makeNextPage(pages, doc, size, index + 1, true, allDoneCallback)
             } else {
                 allDoneCallback();
             }
         })
     },
-    makePDF(pages) {
+    makePDF(pages, size, filename) {
 
         let doc = new PDFDocument({
             margin: 0,
@@ -74,8 +79,8 @@ export default {
         });
 
         return new Promise((resolve, reject) => {
-            this.makeNextPage(pages, doc, 0, false, () => {
-                let path = Dir.getPDFDir() + '/file.pdf';
+            this.makeNextPage(pages, doc, size, 0, false, () => {
+                let path = Dir.getPDFDir() + '/' + filename + '.pdf';
                 let file = fs.createWriteStream(path);
                 doc.pipe(file);
                 doc.end();
