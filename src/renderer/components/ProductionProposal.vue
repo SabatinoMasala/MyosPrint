@@ -22,7 +22,7 @@
                     </el-option>
                 </el-select>
             </h2>
-            <el-table :data="fiches" empty-text="No fiches" v-loading.body="loading">
+            <el-table :data="fiches" empty-text="No fiches" v-loading="loading" :element-loading-text="getLoadingText()">
                 <el-table-column
                         prop="size"
                         label="Size">
@@ -54,7 +54,9 @@
     import FicheMaker from '@/helpers/FicheMaker'
     import PDFMaker from '@/helpers/PDFMaker'
     import Download from '@/helpers/Download'
+    import Promise from 'bluebird'
     import SVGConvert from '@/helpers/SVGConvert'
+    import DownloadConversionProgress from '@/store/DownloadConversionProgress'
 
     export default {
         computed: {
@@ -85,6 +87,7 @@
             }
         },
         mounted() {
+            this.downloadConversionProgress.reset();
             this.$notify({
                 title: 'Hold on tight',
                 message: 'Production proposal is preparing',
@@ -99,6 +102,15 @@
                 })
         },
         methods: {
+            getLoadingText() {
+                if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
+                    return 'Downloading: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
+                } else if (this.downloadConversionProgress.currentProcedure === 'CONVERT') {
+                    return 'Converting: ' + this.downloadConversionProgress.conversions + '/' + this.downloadConversionProgress.totalConversions
+                } else {
+                    return 'Loading';
+                }
+            },
             isDisabledButton(index) {
                 if (this.fiches.length > 0) {
                     if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c') {
@@ -109,21 +121,20 @@
             },
             startDownload() {
                 let downloads = [];
+                this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 this.labels.forEach((label) => {
                     downloads.push(
                         Promise.all(Download.downloadSVGFromLabel(label))
                     );
                 });
                 Promise.all(downloads).then(() => {
-                    let conversions = [];
-                    this.labels.forEach((label) => {
-                        conversions.push(
-                            Promise.all(SVGConvert.convertLabelSVGToPNG(label))
-                        );
-                    });
-                    return Promise.all(conversions)
+                    this.downloadConversionProgress.currentProcedure = 'CONVERT';
+                    console.log('downloading done');
+                    return SVGConvert.convertAll(this.labels);
+                    //return Promise.all(conversions)
                 }).then(() => {
                     this.loading = false;
+                    this.downloadConversionProgress.reset();
                 }).error((e) => {
                     console.log(e);
                 })
@@ -155,6 +166,7 @@
                         disabled: true
                     }
                 ],
+                downloadConversionProgress: DownloadConversionProgress,
                 loading: true,
                 productionProposalID: this.$route.params.proposal_id,
                 productionProposal: false,

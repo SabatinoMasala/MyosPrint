@@ -1,47 +1,108 @@
-import { app, BrowserWindow } from 'electron'
+require('electron-debug')({ showDevTools: true, enabled: true})
+
+import { app, BrowserWindow, Menu } from 'electron'
+import log from 'electron-log';
+log.transports.file.level = true;
 
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+    global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+    ? `http://localhost:9080`
+    : `file://${__dirname}/index.html`
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
-  mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000
-  })
 
-  mainWindow.loadURL(winURL)
+    log.info('Create window');
 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
+    let template = [{
+        label: 'FromScratch',
+        submenu: [{
+            label: 'Quit',
+            accelerator: 'CmdOrCtrl+Q',
+            click: function() { app.quit(); }
+        }]
+    }, {
+        label: 'Edit',
+        submenu: [{
+            label: 'Undo',
+            accelerator: 'CmdOrCtrl+Z',
+            selector: 'undo:'
+        }, {
+            label: 'Redo',
+            accelerator: 'Shift+CmdOrCtrl+Z',
+            selector: 'redo:'
+        }, {
+            type: 'separator'
+        }, {
+            label: 'Cut',
+            accelerator: 'CmdOrCtrl+X',
+            selector: 'cut:'
+        }, {
+            label: 'Copy',
+            accelerator: 'CmdOrCtrl+C',
+            selector: 'copy:'
+        }, {
+            label: 'Paste',
+            accelerator: 'CmdOrCtrl+V',
+            selector: 'paste:'
+        }, {
+            label: 'Select All',
+            accelerator: 'CmdOrCtrl+A',
+            selector: 'selectAll:'
+        }]
+    }];
+    let osxMenu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(osxMenu);
+
+    let installExtension = require('electron-devtools-installer')
+    installExtension.default(installExtension.VUEJS_DEVTOOLS)
+        .then(() => {
+            log.info('installed');
+        })
+        .catch(err => {
+            log.info('Unable to install', err);
+        })
+
+    /**
+     * Initial window options
+     */
+    mainWindow = new BrowserWindow({
+        height: 563,
+        useContentSize: true,
+        width: 1000
+    })
+
+    mainWindow.loadURL(winURL)
+
+    mainWindow.on('closed', () => {
+        mainWindow = null
+    })
 }
+
+app.on('open-url', (e, url) => {
+    e.preventDefault();
+    console.log(url)
+});
 
 app.on('ready', createWindow)
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
 })
 
 app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
+    if (mainWindow === null) {
+        createWindow()
+    }
 })
 
 /**
@@ -53,13 +114,13 @@ app.on('activate', () => {
  */
 
 /*
-import { autoUpdater } from 'electron-updater'
+ import { autoUpdater } from 'electron-updater'
 
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
+ autoUpdater.on('update-downloaded', () => {
+ autoUpdater.quitAndInstall()
+ })
 
-app.on('ready', () => {
-  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
-})
+ app.on('ready', () => {
+ if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
+ })
  */

@@ -1,1 +1,1 @@
-export default 'http://backend.myos.dev/api'
+export default 'https://backend.makeyourownspirit.com/api'
