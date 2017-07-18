@@ -1,7 +1,5 @@
 import Dir from '@/helpers/Dir'
-import Dependencies from '@/helpers/Dependencies'
 Dir.setup();
-Dependencies.check();
 
 import Vue from 'vue'
 import axios from 'axios'

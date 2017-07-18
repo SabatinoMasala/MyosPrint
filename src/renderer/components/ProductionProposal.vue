@@ -106,7 +106,7 @@
                 if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
                     return 'Downloading: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
                 } else if (this.downloadConversionProgress.currentProcedure === 'CONVERT') {
-                    return 'Converting: ' + this.downloadConversionProgress.conversions + '/' + this.downloadConversionProgress.totalConversions
+                    return 'Converting ' + this.downloadConversionProgress.totalConversions + ' files (this can take a while)'
                 } else {
                     return 'Loading';
                 }
