@@ -8,20 +8,11 @@
             </el-menu-item>
         </el-menu>
 
+        <PPSettings></PPSettings>
+
         <div style="margin: 50px;">
             <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
-            <h2>
-                Fiches
-                <el-select v-model="printer" placeholder="Select">
-                    <el-option
-                            v-for="item in printerOptions"
-                            :key="item.value"
-                            :label="item.label"
-                            :disabled="item.disabled"
-                            :value="item.value">
-                    </el-option>
-                </el-select>
-            </h2>
+            <el-button class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
             <el-table :data="fiches" empty-text="No fiches" v-loading="loading" :element-loading-text="getLoadingText()">
                 <el-table-column
                         prop="size"
@@ -56,18 +47,14 @@
     import Download from '@/helpers/Download'
     import Promise from 'bluebird'
     import SVGConvert from '@/helpers/SVGConvert'
+    import PPSettings from '@/components/PPSettings.vue'
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
 
     export default {
+        components: {
+            PPSettings
+        },
         computed: {
-            printer: {
-                get() {
-                    return this.$store.state.Settings.printer
-                },
-                set(value) {
-                    this.$store.commit('SWITCH_PRINTER', value);
-                }
-            },
             fiches() {
                 return FicheMaker.getFichesFromLabels(this.$store.state.Settings.printer, this.labels)
             },
@@ -110,6 +97,9 @@
                 })
         },
         methods: {
+            openModal(modal) {
+                this.$store.commit('OPEN_MODAL', modal)
+            },
             getLoadingText() {
                 if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
                     return 'Downloading: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
@@ -150,7 +140,7 @@
             makePDF(index) {
                 this.loading = true;
                 let filename = this.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
-                PDFMaker.makePDF( this.$store.state.Settings.printer, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
+                PDFMaker.makePDF( this.$store, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
                     this.loading = false;
                 })
             },
@@ -162,16 +152,6 @@
         },
         data() {
             return {
-                printerOptions: [
-                    {
-                        value: 'classic',
-                        label: 'Classic printer',
-                    },
-                    {
-                        value: 'roll',
-                        label: 'Roll printer',
-                    }
-                ],
                 downloadConversionProgress: DownloadConversionProgress,
                 loading: true,
                 productionProposalID: this.$route.params.proposal_id,

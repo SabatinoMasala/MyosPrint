@@ -78,7 +78,10 @@ export default {
             }
         })
     },
-    makePDF(printer, pages, size, filename) {
+    makePDF(store, pages, size, filename) {
+
+        let printer = store.state.Settings.printer;
+        let blankPages = store.state.Settings.pdf_blank_pages_before_labels;
 
         let pageSize = 'a3';
         if (FICHES[printer][size].size !== undefined) {
@@ -89,8 +92,15 @@ export default {
             size: pageSize
         });
 
+        let labelsNeedNewPage = false;
+        if (blankPages !== 0) {
+            for (let i = 0; i < blankPages; i++) {
+                doc.addPage();
+            }
+        }
+
         return new Promise((resolve, reject) => {
-            this.makeNextPage(printer, pages, doc, size, 0, false, () => {
+            this.makeNextPage(printer, pages, doc, size, 0, labelsNeedNewPage, () => {
                 let path = Dir.getPDFDir() + '/' + filename + '.pdf';
                 let file = fs.createWriteStream(path);
                 doc.pipe(file);

@@ -1,8 +1,16 @@
 const state = {
-    printer: 'classic'
+    printer: 'classic',
+    pdf_blank_pages_before_labels: 0,
+    svg_quality: 1000,
 };
 
 const mutations = {
+    UPDATE_SVG_QUALITY(state, value) {
+        state.svg_quality = value;
+    },
+    UPDATE_PDF_BLANK_PAGES_BEFORE_LABELS(state, value) {
+        state.pdf_blank_pages_before_labels = value;
+    },
     SWITCH_PRINTER(state, value) {
         switch (value) {
             case 'roll':
@@ -12,14 +20,9 @@ const mutations = {
                 state.printer = 'classic';
                 break;
         }
-    },
-    SWITCH_TO_CLASSIC_PRINTER (state) {
-        state.printer = 'classic';
-    },
-    SWITCH_TO_ROLL_PRINTER (state) {
-        state.printer = 'roll';
     }
 };
+
 const actions = {
 
 };
