@@ -1,12 +1,17 @@
 import Dir from '@/helpers/Dir'
-Dir.setup();
-
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
 import Vue from 'vue'
 import axios from 'axios'
+import deeplink from '@/router/deeplink'
+import {ipcRenderer} from 'electron';
 
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
+Vue.use(ElementUI);
+Dir.setup();
 
 if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 
@@ -23,3 +28,5 @@ new Vue({
   store,
   template: '<App/>'
 }).$mount('#app');
+
+deeplink.matchIfNeeded( ipcRenderer.sendSync('get-deeplink'), router );

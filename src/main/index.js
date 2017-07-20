@@ -1,7 +1,14 @@
 require('electron-debug')({ showDevTools: true, enabled: true})
 
-import { app, BrowserWindow, Menu } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import log from 'electron-log';
+
+let deeplink = false;
+
+ipcMain.on('get-deeplink', (event) => {
+    event.returnValue = deeplink;
+});
+
 log.transports.file.level = true;
 
 /**
@@ -68,7 +75,7 @@ function createWindow () {
         })
         .catch(err => {
             log.info('Unable to install', err);
-        })
+        });
 
     /**
      * Initial window options
@@ -77,33 +84,36 @@ function createWindow () {
         height: 563,
         useContentSize: true,
         width: 1000
-    })
+    });
 
-    mainWindow.loadURL(winURL)
+    mainWindow.loadURL(winURL);
 
     mainWindow.on('closed', () => {
         mainWindow = null
-    })
+    });
 }
 
 app.on('open-url', (e, url) => {
+    log.info('open-url', url);
+
+    deeplink = url;
+
     e.preventDefault();
-    console.log(url)
 });
 
-app.on('ready', createWindow)
+app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit()
     }
-})
+});
 
 app.on('activate', () => {
     if (mainWindow === null) {
         createWindow()
     }
-})
+});
 
 /**
  * Auto Updater
