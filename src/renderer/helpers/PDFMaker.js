@@ -9,6 +9,10 @@ let FICHES = {
     classic: {
         c: require('@/printers/classic/c.json'),
         b: require('@/printers/classic/b.json'),
+    },
+    roll: {
+        b: require('@/printers/roll/b.json'),
+        c: require('@/printers/roll/c.json'),
     }
 };
 
@@ -51,7 +55,7 @@ export default {
     },
 
     // This needs to be a recursive function instead of a for-loop because of race conditions with page creation
-    makeNextPage(pages, doc, size, index, createNewPageFirst, allDoneCallback) {
+    makeNextPage(printer, pages, doc, size, index, createNewPageFirst, allDoneCallback) {
         let page = pages[index];
         if (!!createNewPageFirst) {
             doc.addPage();
@@ -59,28 +63,34 @@ export default {
         let promises = [];
         Object.keys(page).forEach((part) => {
             page[part].forEach((image, index) => {
-                let position = FICHES['classic'][size].slots[part][index];
-                let dimensions = FICHES['classic'][size].dimensions[part];
-                promises.push(this.addImage(doc, image, position, dimensions))
+                if (FICHES[printer][size].slots[part] !== undefined) {
+                    let position = FICHES[printer][size].slots[part][index];
+                    let dimensions = FICHES[printer][size].dimensions[part];
+                    promises.push(this.addImage(doc, image, position, dimensions))
+                }
             })
         });
         Promise.all(promises).then(() => {
             if (pages.length - 1 > index) {
-                this.makeNextPage(pages, doc, size, index + 1, true, allDoneCallback)
+                this.makeNextPage(printer, pages, doc, size, index + 1, true, allDoneCallback)
             } else {
                 allDoneCallback();
             }
         })
     },
-    makePDF(pages, size, filename) {
+    makePDF(printer, pages, size, filename) {
 
+        let pageSize = 'a3';
+        if (FICHES[printer][size].size !== undefined) {
+            pageSize = FICHES[printer][size].size;
+        }
         let doc = new PDFDocument({
             margin: 0,
-            size: 'a3'
+            size: pageSize
         });
 
         return new Promise((resolve, reject) => {
-            this.makeNextPage(pages, doc, size, 0, false, () => {
+            this.makeNextPage(printer, pages, doc, size, 0, false, () => {
                 let path = Dir.getPDFDir() + '/' + filename + '.pdf';
                 let file = fs.createWriteStream(path);
                 doc.pipe(file);

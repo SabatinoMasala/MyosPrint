@@ -3,14 +3,14 @@ import Dir from '@/helpers/Dir'
 
 export default {
 
-    getFichesFromLabels(labels) {
+    getFichesFromLabels(printer, labels) {
         let groupedLabels = _.groupBy(labels, 'size');
 
         let fichesAmount = [];
 
         Object.keys(groupedLabels).map((size) => {
             let currentLabels = groupedLabels[size];
-            let pages = this.makePages(currentLabels);
+            let pages = this.makePages(printer, currentLabels);
 
             fichesAmount.push({
                 size: size,
@@ -21,8 +21,18 @@ export default {
 
         return fichesAmount;
     },
-    makePages(labels) {
+    makePages(printer, labels) {
 
+        switch (printer) {
+            case 'classic':
+                return this.makeClassicPages(labels);
+                break;
+            case 'roll':
+                return this.makeRollPages(labels);
+                break;
+        }
+    },
+    makeClassicPages(labels) {
         let pages = [{
             front: [],
             back: [],
@@ -53,6 +63,39 @@ export default {
                         front: [],
                         back: [],
                         neck: [],
+                    });
+                    currentPageIndex++;
+                }
+
+            }
+        });
+
+        return pages;
+    },
+    makeRollPages(labels) {
+        // TODO add neck
+        let pages = [{
+            front: [],
+            back: [],
+        }];
+        let currentPageIndex = 0;
+
+        labels.forEach((label) => {
+            for (let i = 0; i < label.amount; i++) {
+                let regex = /[^\/]+\.(svg|png)/;
+
+                let frontLabelFile = (label.frontLabelSVG && label.frontLabelSVG !== '') ? label.frontLabelSVG : label.frontLabelImage;
+                let backLabelFile = (label.backLabelSVG && label.backLabelSVG !== '') ? label.backLabelSVG : label.backLabelImage;
+
+                let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
+                let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
+                pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
+                pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+
+                if (pages[currentPageIndex].back.length >= 1 ||  pages[currentPageIndex].front.length >= 1) {
+                    pages.push({
+                        front: [],
+                        back: [],
                     });
                     currentPageIndex++;
                 }

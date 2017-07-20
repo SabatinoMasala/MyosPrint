@@ -60,8 +60,16 @@
 
     export default {
         computed: {
+            printer: {
+                get() {
+                    return this.$store.state.Settings.printer
+                },
+                set(value) {
+                    this.$store.commit('SWITCH_PRINTER', value);
+                }
+            },
             fiches() {
-                return FicheMaker.getFichesFromLabels(this.labels)
+                return FicheMaker.getFichesFromLabels(this.$store.state.Settings.printer, this.labels)
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
@@ -142,7 +150,7 @@
             makePDF(index) {
                 this.loading = true;
                 let filename = this.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
-                PDFMaker.makePDF( this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
+                PDFMaker.makePDF( this.$store.state.Settings.printer, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
                     this.loading = false;
                 })
             },
@@ -154,7 +162,6 @@
         },
         data() {
             return {
-                printer: 'classic',
                 printerOptions: [
                     {
                         value: 'classic',
@@ -162,8 +169,7 @@
                     },
                     {
                         value: 'roll',
-                        label: 'Roll printer (TODO)',
-                        disabled: true
+                        label: 'Roll printer',
                     }
                 ],
                 downloadConversionProgress: DownloadConversionProgress,
