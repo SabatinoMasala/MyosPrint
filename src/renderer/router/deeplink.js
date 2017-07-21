@@ -5,7 +5,6 @@ const routes = [
         //route: new Route('/production-proposal/:proposal(?printer=:printer)'),
         route: new Route('myos-print://production-proposal/:proposal'),
         callback(value, $router) {
-            console.log('match', $router);
             $router.push({
                 name: 'pp-detail',
                 params: {
@@ -14,11 +13,11 @@ const routes = [
             })
         }
     }
+
 ];
 
 const deeplink = {
     matchIfNeeded(url, $router) {
-        console.log(url);
         if (url !== false) {
             return this.match(url, $router)
         }

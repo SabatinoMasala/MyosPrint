@@ -51,6 +51,9 @@
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
 
     export default {
+        watch: {
+            '$route': 'updateRoute',
+        },
         components: {
             PPSettings
         },
@@ -82,21 +85,30 @@
             }
         },
         mounted() {
-            this.downloadConversionProgress.reset();
-            this.$notify({
-                title: 'Hold on tight',
-                message: 'Production proposal is preparing',
-                type: 'info',
-            });
-            this.$http.get(API + '/production-proposals/' + this.productionProposalID)
-                .then((response) => {
-                    this.productionProposal = response.data['production-proposal'];
-                    this.startDownload();
-                })
-                .catch((error) => {
-                })
+            this.load();
         },
         methods: {
+            load() {
+                this.loading = true;
+                this.labels = [];
+                this.downloadConversionProgress.reset();
+                this.$notify({
+                    title: 'Hold on tight',
+                    message: 'Production proposal is preparing',
+                    type: 'info',
+                });
+                this.$http.get(API + '/production-proposals/' + this.productionProposalID)
+                    .then((response) => {
+                        this.productionProposal = response.data['production-proposal'];
+                        this.startDownload();
+                    })
+                    .catch((error) => {
+                    })
+            },
+            updateRoute() {
+                this.productionProposalID = this.$route.params.proposal_id;
+                this.load();
+            },
             openModal(modal) {
                 this.$store.commit('OPEN_MODAL', modal)
             },
@@ -153,7 +165,7 @@
         data() {
             return {
                 downloadConversionProgress: DownloadConversionProgress,
-                loading: true,
+                loading: false,
                 productionProposalID: this.$route.params.proposal_id,
                 productionProposal: false,
             }

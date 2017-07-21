@@ -93,12 +93,13 @@ function createWindow () {
     });
 }
 
+// The first time around the event won't be received my the renderer, so when the renderer (renderer/main.js) initialises, we check if a deeplink has been set
 app.on('open-url', (e, url) => {
-    log.info('open-url', url);
-
-    deeplink = url;
-
     e.preventDefault();
+    deeplink = url;
+    if (mainWindow !== null && mainWindow !== undefined) {
+        mainWindow.webContents.send('open-url', url);
+    }
 });
 
 app.on('ready', createWindow);
