@@ -15,14 +15,14 @@
       {
         "x": 0,
         "y": 0,
-        "rotation": -90
+        "rotation": 90
       }
     ],
     "back": [
       {
         "x": 3.26,
         "y": 324.397,
-        "rotation": -90
+        "rotation": 90
       }
     ]
   }

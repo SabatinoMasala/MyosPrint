@@ -123,7 +123,7 @@
             },
             isDisabledButton(index) {
                 if (this.fiches.length > 0) {
-                    if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c') {
+                    if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c' || this.fiches[index].size === 'neck') {
                         return false;
                     }
                     return true;

@@ -8,6 +8,24 @@ export default {
 
         let fichesAmount = [];
 
+        if (printer === 'roll' && Object.keys(groupedLabels).length > 0) {
+            groupedLabels['neck'] = [];
+            Object.keys(groupedLabels).forEach((size) => {
+
+                if (size === 'neck') { return; }
+
+                groupedLabels[size].forEach((label) => {
+                    groupedLabels['neck'].push({
+                        neckLabelSVG: label.neckLabelSVG,
+                        neckLabelImage: label.neckLabelImage,
+                        is_neck: true,
+                        amount: label.amount,
+                        size: label.size,
+                    });
+                });
+            });
+        }
+
         Object.keys(groupedLabels).map((size) => {
             let currentLabels = groupedLabels[size];
             let pages = this.makePages(printer, currentLabels);
@@ -33,6 +51,7 @@ export default {
         }
     },
     makeClassicPages(labels) {
+
         let pages = [{
             front: [],
             back: [],
@@ -73,37 +92,67 @@ export default {
         return pages;
     },
     makeRollPages(labels) {
-        // TODO add neck
-        let pages = [{
-            front: [],
-            back: [],
-        }];
-        let currentPageIndex = 0;
 
-        labels.forEach((label) => {
-            for (let i = 0; i < label.amount; i++) {
-                let regex = /[^\/]+\.(svg|png)/;
+        if (labels && labels[0].is_neck !== undefined && labels[0].is_neck === true) {
 
-                let frontLabelFile = (label.frontLabelSVG && label.frontLabelSVG !== '') ? label.frontLabelSVG : label.frontLabelImage;
-                let backLabelFile = (label.backLabelSVG && label.backLabelSVG !== '') ? label.backLabelSVG : label.backLabelImage;
+            let pages = [{
+                neck: []
+            }];
+            let currentPageIndex = 0;
 
-                let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
-                let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
-                pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
-                pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+            labels.forEach((label) => {
+                for (let i = 0; i < label.amount; i++) {
+                    let regex = /[^\/]+\.(svg|png)/;
 
-                if (pages[currentPageIndex].back.length >= 1 ||  pages[currentPageIndex].front.length >= 1) {
-                    pages.push({
-                        front: [],
-                        back: [],
-                    });
-                    currentPageIndex++;
+                    let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
+
+                    let neck = regex.exec(neckLabelFile)[0].replace('.svg', '.png');
+                    pages[currentPageIndex].neck.push( Dir.getImagesDir() + '/' + neck );
+
+                    if (pages[currentPageIndex].neck.length >= 12) {
+                        pages.push({
+                            neck: []
+                        });
+                        currentPageIndex++;
+                    }
+
                 }
+            });
 
-            }
-        });
+            return pages;
+        } else {
+            let pages = [{
+                front: [],
+                back: [],
+            }];
+            let currentPageIndex = 0;
 
-        return pages;
+            labels.forEach((label) => {
+                for (let i = 0; i < label.amount; i++) {
+                    let regex = /[^\/]+\.(svg|png)/;
+
+                    let frontLabelFile = (label.frontLabelSVG && label.frontLabelSVG !== '') ? label.frontLabelSVG : label.frontLabelImage;
+                    let backLabelFile = (label.backLabelSVG && label.backLabelSVG !== '') ? label.backLabelSVG : label.backLabelImage;
+
+                    let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
+                    let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
+                    pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
+                    pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+
+                    if (pages[currentPageIndex].back.length >= 1 ||  pages[currentPageIndex].front.length >= 1) {
+                        pages.push({
+                            front: [],
+                            back: [],
+                        });
+                        currentPageIndex++;
+                    }
+
+                }
+            });
+
+            return pages;
+        }
+
     }
 
 }

@@ -13,6 +13,7 @@ let FICHES = {
     roll: {
         b: require('@/printers/roll/b.json'),
         c: require('@/printers/roll/c.json'),
+        neck: require('@/printers/roll/neck.json'),
     }
 };
 
