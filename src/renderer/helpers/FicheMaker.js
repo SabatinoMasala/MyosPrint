@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import _ from 'lodash'
 import Dir from '@/helpers/Dir'
 
@@ -19,7 +20,7 @@ export default {
                 if (size === 'neck') { return; }
 
                 groupedLabels[size].forEach((label) => {
-                    let neckLabel = label;
+                    let neckLabel = Vue.util.extend({}, label);
                     neckLabel.is_neck = true;
                     groupedLabels['neck'].push(neckLabel);
                 });

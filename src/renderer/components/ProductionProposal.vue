@@ -160,7 +160,7 @@
             },
             makePDF(index) {
                 this.loading = true;
-                let filename = this.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
+                let filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
                 PDFMaker.makePDF( this.$store, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
                     this.loading = false;
                 })
