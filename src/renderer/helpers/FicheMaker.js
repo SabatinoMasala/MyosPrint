@@ -4,6 +4,10 @@ import Dir from '@/helpers/Dir'
 export default {
 
     getFichesFromLabels(printer, labels) {
+
+        // Labels are ordered by bottle class
+        labels = _.orderBy(labels, 'bottle_class', 'asc');
+
         let groupedLabels = _.groupBy(labels, 'size');
 
         let fichesAmount = [];
@@ -21,6 +25,7 @@ export default {
                         is_neck: true,
                         amount: label.amount,
                         size: label.size,
+                        bottle_class: label.bottle_class,
                     });
                 });
             });
@@ -69,12 +74,18 @@ export default {
 
                 let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
                 let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
-                pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
-                pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+                pages[currentPageIndex].front.push({
+                    image: Dir.getImagesDir() + '/' + front
+                });
+                pages[currentPageIndex].back.push({
+                    image: Dir.getImagesDir() + '/' + back
+                });
 
                 if (neckLabelFile && neckLabelFile !== '') {
                     let neck = regex.exec(neckLabelFile)[0].replace('.svg', '.png');
-                    pages[currentPageIndex].neck.push( Dir.getImagesDir() + '/' + neck );
+                    pages[currentPageIndex].neck.push({
+                        image: Dir.getImagesDir() + '/' + neck
+                    });
                 }
 
                 if (pages[currentPageIndex].neck.length >= 5 || pages[currentPageIndex].back.length >= 5 ||  pages[currentPageIndex].front.length >= 5) {
@@ -99,6 +110,8 @@ export default {
                 neck: []
             }];
             let currentPageIndex = 0;
+            let bottle = 1;
+            let combinations = {};
 
             labels.forEach((label) => {
                 for (let i = 0; i < label.amount; i++) {
@@ -107,7 +120,18 @@ export default {
                     let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
 
                     let neck = regex.exec(neckLabelFile)[0].replace('.svg', '.png');
-                    pages[currentPageIndex].neck.push( Dir.getImagesDir() + '/' + neck );
+                    let combo = label.size + label.bottle_class;
+                    if (combinations[combo] === undefined) {
+                        combinations[combo] = {
+                            count: 1
+                        }
+                    }
+                    pages[currentPageIndex].neck.push({
+                        text: bottle + combo + combinations[combo].count,
+                        image: Dir.getImagesDir() + '/' + neck
+                    });
+
+                    combinations[combo].count++;
 
                     if (pages[currentPageIndex].neck.length >= 12) {
                         pages.push({
@@ -115,6 +139,8 @@ export default {
                         });
                         currentPageIndex++;
                     }
+
+                    bottle++;
 
                 }
             });
@@ -136,8 +162,12 @@ export default {
 
                     let front = regex.exec(frontLabelFile)[0].replace('.svg', '.png');
                     let back = regex.exec(backLabelFile)[0].replace('.svg', '.png');
-                    pages[currentPageIndex].front.push( Dir.getImagesDir() + '/' + front );
-                    pages[currentPageIndex].back.push( Dir.getImagesDir() + '/' + back );
+                    pages[currentPageIndex].front.push({
+                        image: Dir.getImagesDir() + '/' + front
+                    });
+                    pages[currentPageIndex].back.push({
+                        image: Dir.getImagesDir() + '/' + back
+                    });
 
                     if (pages[currentPageIndex].back.length >= 1 ||  pages[currentPageIndex].front.length >= 1) {
                         pages.push({

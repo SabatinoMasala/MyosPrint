@@ -63,9 +63,14 @@
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
+                    let bottleClass = '#';
+                    if (proposal.orderBottle.designedBottle.bottle.class !== null) {
+                        bottleClass = proposal.orderBottle.designedBottle.bottle.class.toLowerCase();
+                    }
                     return {
                         amount:proposal.orderBottle.amount,
                         size: proposal.orderBottle.designedBottle.label.size.toLowerCase(),
+                        bottle_class: bottleClass,
                         frontLabelImage: proposal.orderBottle.designedBottle.frontLabel,
                         backLabelImage: proposal.orderBottle.designedBottle.backLabel,
                         neckLabelImage: proposal.orderBottle.designedBottle.neckLabel,

@@ -18,7 +18,15 @@ let FICHES = {
 };
 
 export default {
-    addImage(doc, image, position, dimensions) {
+    addText(doc, text, x, y) {
+        doc.text(text, x, y);
+    },
+    addImage(doc, data, position, dimensions, needsInfo) {
+
+        let margin = 5;
+        let image = data.image;
+        let text = data.text;
+
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
                 sharp(image).rotate(position.rotation).toBuffer().then((data) => {
@@ -31,14 +39,24 @@ export default {
                             height: width,
                             x: position.x,
                             y: position.y
-                        })
+                        });
+
+                        if (needsInfo) {
+                            this.addText(doc, text, position.x, position.y + width + margin);
+                        }
+
                     } else {
                         doc.image(data, {
                             width: width,
                             height: height,
                             x: position.x,
                             y: position.y
-                        })
+                        });
+
+                        if (needsInfo) {
+                            this.addText(doc, text, position.x, position.y + width + margin);
+                        }
+
                     }
 
                     resolve()
@@ -57,17 +75,25 @@ export default {
 
     // This needs to be a recursive function instead of a for-loop because of race conditions with page creation
     makeNextPage(printer, pages, doc, size, index, createNewPageFirst, allDoneCallback) {
+
+        doc.fontSize(7);
+
+        let needsInfo = false;
+        if (FICHES[printer][size].settings) {
+            needsInfo = !!FICHES[printer][size].settings.info;
+        }
+
         let page = pages[index];
         if (!!createNewPageFirst) {
             doc.addPage();
         }
         let promises = [];
         Object.keys(page).forEach((part) => {
-            page[part].forEach((image, index) => {
+            page[part].forEach((data, index) => {
                 if (FICHES[printer][size].slots[part] !== undefined) {
                     let position = FICHES[printer][size].slots[part][index];
                     let dimensions = FICHES[printer][size].dimensions[part];
-                    promises.push(this.addImage(doc, image, position, dimensions))
+                    promises.push(this.addImage(doc, data, position, dimensions, needsInfo))
                 }
             })
         });
