@@ -1,7 +1,8 @@
-require('electron-debug')({ showDevTools: true, enabled: true})
+// require('electron-debug')({ showDevTools: true, enabled: true})
 
-import { app, BrowserWindow, Menu, ipcMain } from 'electron'
+import { app, BrowserWindow, Menu, ipcMain, autoUpdater, dialog  } from 'electron'
 import log from 'electron-log';
+import os from 'os';
 
 let deeplink = false;
 
@@ -68,14 +69,14 @@ function createWindow () {
     let osxMenu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(osxMenu);
 
-    let installExtension = require('electron-devtools-installer')
-    installExtension.default(installExtension.VUEJS_DEVTOOLS)
-        .then(() => {
-            log.info('installed');
-        })
-        .catch(err => {
-            log.info('Unable to install', err);
-        });
+    // let installExtension = require('electron-devtools-installer')
+    // installExtension.default(installExtension.VUEJS_DEVTOOLS)
+    //     .then(() => {
+    //         log.info('installed');
+    //     })
+    //     .catch(err => {
+    //         log.info('Unable to install', err);
+    //     });
 
     /**
      * Initial window options
@@ -124,14 +125,31 @@ app.on('activate', () => {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
-/*
- import { autoUpdater } from 'electron-updater'
+if (process.env.NODE_ENV === 'production') {
+    let platform = os.platform() + '_' + os.arch();
+    let version = app.getVersion();
+    let url = 'https://apps.wonderlus.be/nuts/myos-print/update/' + platform + '/' + version;
 
- autoUpdater.on('update-downloaded', () => {
- autoUpdater.quitAndInstall()
- })
+    autoUpdater.setFeedURL(url);
 
- app.on('ready', () => {
- if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
- })
- */
+    autoUpdater.on('error', (event, error) => {
+        dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        dialog.showMessageBox({
+            title: 'Install Updates',
+            message: 'Updates downloaded, restart?',
+            buttons: ['Sure', 'No']
+        }, (buttonIndex) => {
+            if (buttonIndex === 0) {
+                setImmediate(() => autoUpdater.quitAndInstall())
+            }
+        })
+    });
+
+    app.on('ready', () => {
+        autoUpdater.checkForUpdates()
+    });
+
+}

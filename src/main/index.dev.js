@@ -21,7 +21,7 @@ require('electron').app.on('ready', () => {
     .catch(err => {
       console.log('Unable to install `vue-devtools`: \n', err)
     })
-})
+});
 
 // Require `main` process to boot app
-require('./index')
+require('./index');
