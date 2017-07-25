@@ -7,7 +7,13 @@ export default {
     getFichesFromLabels(printer, labels) {
 
         // Labels are ordered by bottle class
-        labels = _.orderBy(labels, 'bottle_class', 'asc');
+        labels = _.orderBy(labels, function(item) {
+            return [item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.slug]
+        });
+
+        // labels.forEach((label) => {
+        //     console.log(label.bottle_class, label.proposal.orderBottle.designedBottle.bottle.slug)
+        // });
 
         let groupedLabels = _.groupBy(labels, 'size');
 
