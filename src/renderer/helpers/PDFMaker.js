@@ -18,14 +18,20 @@ let FICHES = {
 };
 
 export default {
-    addText(doc, text, x, y) {
-        doc.text(text, x, y);
+    addText(doc, textArray, x, y) {
+        textArray.forEach((text, index) => {
+            if (index === 0) {
+                doc.text(text, x, y);
+            } else {
+                doc.text(text);
+            }
+        });
     },
     addImage(doc, data, position, dimensions, needsInfo) {
 
         let margin = 5;
         let image = data.image;
-        let text = data.text;
+        let textArray = data.text;
 
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
@@ -42,7 +48,7 @@ export default {
                         });
 
                         if (needsInfo) {
-                            this.addText(doc, text, position.x, position.y + width + margin);
+                            this.addText(doc, textArray, position.x, position.y + width + margin);
                         }
 
                     } else {
@@ -54,7 +60,7 @@ export default {
                         });
 
                         if (needsInfo) {
-                            this.addText(doc, text, position.x, position.y + width + margin);
+                            this.addText(doc, textArray, position.x, position.y + width + margin);
                         }
 
                     }

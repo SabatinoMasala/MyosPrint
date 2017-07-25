@@ -68,6 +68,7 @@
                         bottleClass = proposal.orderBottle.designedBottle.bottle.class.toLowerCase();
                     }
                     return {
+                        proposal: proposal,
                         amount:proposal.orderBottle.amount,
                         size: proposal.orderBottle.designedBottle.label.size.toLowerCase(),
                         bottle_class: bottleClass,
@@ -83,7 +84,10 @@
             bottleProposals() {
                 if (this.productionProposal) {
                     return _.flatMap(this.productionProposal.orders, ((order) => {
-                        return order.bottleProposals
+                        return order.bottleProposals.map((bottleProposal) => {
+                            bottleProposal.order = order;
+                            return bottleProposal;
+                        });
                     }))
                 }
                 return []

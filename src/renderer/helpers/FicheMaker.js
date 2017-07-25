@@ -19,14 +19,9 @@ export default {
                 if (size === 'neck') { return; }
 
                 groupedLabels[size].forEach((label) => {
-                    groupedLabels['neck'].push({
-                        neckLabelSVG: label.neckLabelSVG,
-                        neckLabelImage: label.neckLabelImage,
-                        is_neck: true,
-                        amount: label.amount,
-                        size: label.size,
-                        bottle_class: label.bottle_class,
-                    });
+                    let neckLabel = label;
+                    neckLabel.is_neck = true;
+                    groupedLabels['neck'].push(neckLabel);
                 });
             });
         }
@@ -126,8 +121,14 @@ export default {
                             count: 1
                         }
                     }
+                    let drinkSlug = label.proposal.orderBottle.designedBottle.drink.slug.substring(0, 5);
+                    let bottleSlug = label.proposal.orderBottle.designedBottle.bottle.slug.substring(0, 5);
                     pages[currentPageIndex].neck.push({
-                        text: bottle + combo + combinations[combo].count,
+                        text: [
+                            label.proposal.order.hashId,
+                            drinkSlug + '-' + bottleSlug,
+                            bottle + combo + combinations[combo].count,
+                        ],
                         image: Dir.getImagesDir() + '/' + neck
                     });
 

@@ -21,10 +21,6 @@
             PDF Blank pages
         </h2>
         <el-input-number v-model="blankPages" :min="0"></el-input-number>
-        <h2>
-            SVG Quality
-        </h2>
-        <el-input-number v-model="svgQuality" :step="50" :min="0"></el-input-number>
     </el-dialog>
 </template>
 
