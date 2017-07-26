@@ -28,7 +28,9 @@ export default {
                 groupedLabels[size].forEach((label) => {
                     let neckLabel = Vue.util.extend({}, label);
                     neckLabel.is_neck = true;
-                    groupedLabels['neck'].push(neckLabel);
+                    if (neckLabel.neckLabelSVG !== '' || neckLabel.neckLabelImage !== '') {
+                        groupedLabels['neck'].push(neckLabel);
+                    }
                 });
             });
         }
@@ -106,7 +108,7 @@ export default {
     },
     makeRollPages(labels) {
 
-        if (labels && labels[0].is_neck !== undefined && labels[0].is_neck === true) {
+        if (labels && labels.length > 0 && labels[0].is_neck !== undefined && labels[0].is_neck === true) {
 
             let pages = [{
                 neck: []
@@ -121,7 +123,8 @@ export default {
 
                     let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
 
-                    let neck = regex.exec(neckLabelFile)[0].replace('.svg', '.png');
+                    let matches = regex.exec(neckLabelFile);
+                    let neck = matches[0].replace('.svg', '.png');
                     let combo = label.size + label.bottle_class;
                     if (combinations[combo] === undefined) {
                         combinations[combo] = {
