@@ -1,4 +1,4 @@
 deploy:
 	yarn install
-	yarn build:dir
+	yarn build-osx
 	yarn sign
