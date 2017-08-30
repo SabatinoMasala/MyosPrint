@@ -31,6 +31,7 @@ export default {
 
         let margin = 5;
         let image = data.image;
+
         let textArray = data.text;
 
         return new Promise((resolve, reject) => {

@@ -44,11 +44,10 @@
     import Dir from '@/helpers/Dir'
     import FicheMaker from '@/helpers/FicheMaker'
     import PDFMaker from '@/helpers/PDFMaker'
-    import Download from '@/helpers/Download'
     import Promise from 'bluebird'
-    import SVGConvert from '@/helpers/SVGConvert'
     import PPSettings from '@/components/PPSettings.vue'
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
+    import PuppeteerDownloader from "../helpers/PuppeteerDownloader";
 
     export default {
         watch: {
@@ -99,7 +98,6 @@
         methods: {
             load() {
                 this.loading = true;
-                this.labels = [];
                 this.downloadConversionProgress.reset();
                 this.$notify({
                     title: 'Hold on tight',
@@ -109,7 +107,7 @@
                 this.$http.get(API + '/production-proposals/' + this.productionProposalID)
                     .then((response) => {
                         this.productionProposal = response.data['production-proposal'];
-                        this.startDownload();
+                        this.captureSVGs();
                     })
                     .catch((error) => {
                     })
@@ -123,9 +121,7 @@
             },
             getLoadingText() {
                 if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
-                    return 'Downloading: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
-                } else if (this.downloadConversionProgress.currentProcedure === 'CONVERT') {
-                    return 'Converting ' + this.downloadConversionProgress.totalConversions + ' files (this can take a while)'
+                    return 'Downloading & converting: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
                 } else {
                     return 'Loading';
                 }
@@ -138,25 +134,22 @@
                     return true;
                 }
             },
-            startDownload() {
-                let downloads = [];
-                this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
-                this.labels.forEach((label) => {
-                    downloads.push(
-                        Promise.all(Download.downloadSVGFromLabel(label))
-                    );
+            async captureSVGs() {
+                let urls = _.flatMap(this.labels, (label) => {
+                    let arr = [
+                        label.frontLabelSVG,
+                        label.backLabelSVG,
+                    ];
+                    if (label.neckLabelSVG) {
+                        arr.push(label.neckLabelSVG);
+                    }
+                    return arr;
                 });
-                Promise.all(downloads).then(() => {
-                    this.downloadConversionProgress.currentProcedure = 'CONVERT';
-                    console.log('downloading done');
-                    return SVGConvert.convertAll(this.labels);
-                    //return Promise.all(conversions)
-                }).then(() => {
-                    this.loading = false;
-                    this.downloadConversionProgress.reset();
-                }).error((e) => {
-                    console.log(e);
-                })
+                this.downloadConversionProgress.totalDownloads = urls.length;
+                this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
+                await PuppeteerDownloader.downloadSVGs(urls, this.$store);
+                this.loading = false;
+                this.downloadConversionProgress.reset();
             },
             makePDF(index) {
                 this.loading = true;

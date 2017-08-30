@@ -8,9 +8,6 @@ export default {
     getPDFDir() {
         return this.getBaseDir() + '/pdf';
     },
-    getSVGDir() {
-        return this.getBaseDir() + '/svg';
-    },
     getImagesDir() {
         return this.getBaseDir() + '/images';
     },
@@ -20,9 +17,6 @@ export default {
         }
         if (!fs.existsSync( this.getPDFDir() )){
             fs.mkdirSync( this.getPDFDir() );
-        }
-        if (!fs.existsSync( this.getSVGDir() )){
-            fs.mkdirSync( this.getSVGDir() );
         }
         if (!fs.existsSync( this.getImagesDir() )){
             fs.mkdirSync( this.getImagesDir() );

@@ -2,6 +2,7 @@ const state = {
     printer: 'roll',
     pdf_blank_pages_before_labels: 0,
     svg_quality: 1000,
+    extension: 'jpeg',
 };
 
 const mutations = {
