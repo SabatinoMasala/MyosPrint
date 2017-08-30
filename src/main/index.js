@@ -125,31 +125,31 @@ app.on('activate', () => {
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
  */
 
-if (process.env.NODE_ENV === 'production') {
-    let platform = os.platform() + '_' + os.arch();
-    let version = app.getVersion();
-    let url = 'https://apps.wonderlus.be/nuts/myos-print/update/' + platform + '/' + version;
-
-    autoUpdater.setFeedURL(url);
-
-    autoUpdater.on('error', (event, error) => {
-        dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
-    });
-
-    autoUpdater.on('update-downloaded', () => {
-        dialog.showMessageBox({
-            title: 'Install Updates',
-            message: 'Updates downloaded, restart?',
-            buttons: ['Sure', 'No']
-        }, (buttonIndex) => {
-            if (buttonIndex === 0) {
-                setImmediate(() => autoUpdater.quitAndInstall())
-            }
-        })
-    });
-
-    app.on('ready', () => {
-        autoUpdater.checkForUpdates()
-    });
-
-}
+// if (process.env.NODE_ENV === 'production') {
+//     let platform = os.platform() + '_' + os.arch();
+//     let version = app.getVersion();
+//     let url = 'https://apps.wonderlus.be/nuts/myos-print/update/' + platform + '/' + version;
+//
+//     autoUpdater.setFeedURL(url);
+//
+//     autoUpdater.on('error', (event, error) => {
+//         dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
+//     });
+//
+//     autoUpdater.on('update-downloaded', () => {
+//         dialog.showMessageBox({
+//             title: 'Install Updates',
+//             message: 'Updates downloaded, restart?',
+//             buttons: ['Sure', 'No']
+//         }, (buttonIndex) => {
+//             if (buttonIndex === 0) {
+//                 setImmediate(() => autoUpdater.quitAndInstall())
+//             }
+//         })
+//     });
+//
+//     app.on('ready', () => {
+//         autoUpdater.checkForUpdates()
+//     });
+//
+// }
