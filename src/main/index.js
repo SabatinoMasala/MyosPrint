@@ -30,7 +30,7 @@ function createWindow () {
     log.info('Create window');
 
     let template = [{
-        label: 'FromScratch',
+        label: 'MyosPrint',
         submenu: [{
             label: 'Quit',
             accelerator: 'CmdOrCtrl+Q',
