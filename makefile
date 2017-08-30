@@ -1,3 +1,4 @@
 deploy:
 	yarn install
-	yarn build
+	yarn build:dir
+	yarn sign

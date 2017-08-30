@@ -21,9 +21,9 @@ export default {
             let dest = Dir.getImagesDir() + '/' + regex.exec(url)[0];
             dest = dest.replace('svg', 'png');
 
-            if (fs.existsSync( dest )) {
-                continue;
-            }
+            // if (fs.existsSync( dest )) {
+            //     continue;
+            // }
 
             await page.goto('https://www.makeyourownspirit.com/capture?svg=' + url);
             await page.waitFor('.loaded');

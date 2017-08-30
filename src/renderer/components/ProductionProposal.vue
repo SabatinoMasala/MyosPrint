@@ -128,7 +128,7 @@
             },
             isDisabledButton(index) {
                 if (this.fiches.length > 0) {
-                    if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c' || this.fiches[index].size === 'neck') {
+                    if (this.fiches[index].size === 'b' || this.fiches[index].size === 'c' || this.fiches[index].size === 'neck' || this.fiches[index].size === 'mini_a' || this.fiches[index].size === 'mini_b') {
                         return false;
                     }
                     return true;
