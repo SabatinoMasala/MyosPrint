@@ -133,6 +133,12 @@ export default {
                     }
                     let drinkSlug = label.proposal.orderBottle.designedBottle.drink.slug.substring(0, 5);
                     let bottleSlug = label.proposal.orderBottle.designedBottle.bottle.slug.substring(0, 5);
+                    if (label.proposal.orderBottle.designedBottle.bottle.slug === 'apotheque') {
+                        bottleSlug = 'apoth';
+                    }
+                    if (label.proposal.orderBottle.designedBottle.bottle.slug === 'apotheque-brun') {
+                        bottleSlug = 'apo brun';
+                    }
                     pages[currentPageIndex].neck.push({
                         text: [
                             label.proposal.order.hashId,

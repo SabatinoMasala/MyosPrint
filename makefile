@@ -1,4 +1,4 @@
-deploy:
+release:
 	yarn install
-	yarn build-osx
+	yarn build
 	yarn sign
