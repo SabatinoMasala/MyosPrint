@@ -1,12 +1,14 @@
 {
   "name": "myosprint",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": " <>",
   "description": "An electron-vue project",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
-    "build": "export CSC_IDENTITY_AUTO_DISCOVERY=false && node .electron-vue/build.js && electron-builder -mw",
+    "build-all": "export CSC_IDENTITY_AUTO_DISCOVERY=false && node .electron-vue/build.js && electron-builder -mw",
+    "build-mac": "export CSC_IDENTITY_AUTO_DISCOVERY=false && node .electron-vue/build.js && electron-builder -m",
+    "build-windows": "node .electron-vue/build.js && electron-builder -w",
     "build:dir": "export CSC_IDENTITY_AUTO_DISCOVERY=false && node .electron-vue/build.js && electron-builder -mw --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",

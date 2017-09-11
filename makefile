@@ -1,4 +1,4 @@
 release:
 	yarn install
-	yarn build
+	yarn build-mac
 	yarn sign
