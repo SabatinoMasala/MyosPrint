@@ -1,1 +1,1 @@
-export default 'https://backend.makeyourownspirit.com/api'
+export default 'https://backend-api.makeyourownspirit.com'
