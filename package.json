@@ -74,7 +74,7 @@
     "electron-log": "^2.2.7",
     "electron-osx-sign": "^0.4.7",
     "electron-updater": "^2.7.2",
-    "element-ui": "^1.3.7",
+    "element-ui": "^2.0.0-alpha.2",
     "lodash": "^4.17.4",
     "node-sass": "^4.5.3",
     "pdfkit": "^0.8.3",

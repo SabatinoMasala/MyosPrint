@@ -1,6 +1,6 @@
 import Dir from '@/helpers/Dir'
 import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-default/index.css'
+import 'element-ui/lib/theme-chalk/index.css'
 import Vue from 'vue'
 import axios from 'axios'
 import deeplink from '@/router/deeplink'

@@ -147,5 +147,41 @@ export default {
                 })
             });
         });
+    },
+    makeSamplePage(template, doc, callback) {
+        Object.keys(template.slots).forEach((part) => {
+            let slots = template.slots[part];
+            slots.forEach((slot) => {
+                let dimensions = template.dimensions[part];
+                if (slot.rotation === 90) {
+                    doc.rect(slot.x, slot.y, dimensions.height, dimensions.width)
+                        .fill('gray');
+                } else {
+                    doc.rect(slot.x, slot.y, dimensions.width, dimensions.height)
+                        .fill('gray');
+                }
+            })
+        });
+        callback();
+    },
+    makeSamplePDF(template, filename = 'sample.pdf') {
+
+        let doc = new PDFDocument({
+            margin: 0,
+            size: template.size
+        });
+
+        return new Promise((resolve, reject) => {
+            this.makeSamplePage(template, doc, () => {
+                let path = Dir.getPDFDir() + '/' + filename + '.pdf';
+                let file = fs.createWriteStream(path);
+                doc.pipe(file);
+                doc.end();
+                file.on('finish', () => {
+                    shell.openItem(path);
+                    resolve();
+                })
+            });
+        });
     }
 }

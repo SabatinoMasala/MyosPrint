@@ -8,7 +8,7 @@ export default new Router({
         {
             path: '/',
             name: 'home',
-            component: require('@/components/Home')
+            component: require('@/components/FicheEditor')
         },
         {
             path: '/production-proposal/:proposal_id',

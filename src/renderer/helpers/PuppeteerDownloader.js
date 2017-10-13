@@ -17,6 +17,10 @@ export default {
 
             DownloadConversionProgress.downloads++;
 
+            if (!url || url === '') {
+                return;
+            }
+
             let regex = /[^\/]+\.svg/;
             let dest = Dir.getImagesDir() + '/' + regex.exec(url)[0];
             dest = dest.replace('svg', 'png');
