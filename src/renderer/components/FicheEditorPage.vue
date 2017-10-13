@@ -38,6 +38,9 @@
     import CanEditFiche from '@/mixins/CanEditFiche'
     export default {
         mixins: [CanEditFiche],
+        props: {
+            fiche: Object
+        },
         computed: {
             multiplier() {
                 return this.zoom;
@@ -47,7 +50,7 @@
                     width: (this.fiche.size[0] * this.multiplier) + 'px',
                     height: (this.fiche.size[1] * this.multiplier) + 'px'
                 }
-            }
+            },
         },
         methods: {
             getStyleFront(slot) {

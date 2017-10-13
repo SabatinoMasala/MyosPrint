@@ -1,15 +1,19 @@
-import {mapGetters, mapState} from 'vuex'
 export default {
     computed: {
-        ...mapState({
-            fiche: state => state.FicheEditor.fiche
-        }),
-        ...mapGetters({
-            canvasDimensions: 'FicheEditor/canvasDimensions',
-            slotsFront: 'FicheEditor/slotsFront',
-            slotsBack: 'FicheEditor/slotsBack',
-            dimensionsFront: 'FicheEditor/dimensionsFront',
-            dimensionsBack: 'FicheEditor/dimensionsBack'
-        })
+        canvasDimensions() {
+            return this.fiche.size;
+        },
+        slotsFront() {
+            return this.fiche.slots.front
+        },
+        slotsBack() {
+            return this.fiche.slots.back
+        },
+        dimensionsFront() {
+            return this.fiche.dimensions.front;
+        },
+        dimensionsBack() {
+            return this.fiche.dimensions.back;
+        }
     }
 }

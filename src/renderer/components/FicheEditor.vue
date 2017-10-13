@@ -7,9 +7,9 @@
             </el-menu-item>
         </el-menu>
 
-        <el-row class="padded" v-if="fiche">
+        <el-row class="padded">
             <el-col :span="12">
-                <FicheEditorPage></FicheEditorPage>
+                <FicheEditorPage :fiche="fiche"></FicheEditorPage>
             </el-col>
             <el-col :span="12">
                 <el-button @click.stop.prevent="downloadPDF">Download Sample PDF</el-button>
@@ -84,11 +84,9 @@
                 PDFMaker.makeSamplePDF(this.fiche);
             }
         },
-        created() {
-            this.$store.commit('FicheEditor/OPEN_FICHE', Fiche);
-        },
         data() {
             return {
+                fiche: Fiche
             }
         }
     }
