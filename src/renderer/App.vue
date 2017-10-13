@@ -17,6 +17,9 @@
     .text-center {
         text-align: center;
     }
+    .text-right {
+        text-align: right;
+    }
     .d-flex {
         display: flex !important;
     }

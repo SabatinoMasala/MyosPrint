@@ -11,6 +11,9 @@ export default {
     getImagesDir() {
         return this.getBaseDir() + '/images';
     },
+    getFichesDir() {
+        return this.getBaseDir() + '/fiches';
+    },
     setup() {
         if (!fs.existsSync( this.getBaseDir() )){
             fs.mkdirSync( this.getBaseDir() );
@@ -20,6 +23,9 @@ export default {
         }
         if (!fs.existsSync( this.getImagesDir() )){
             fs.mkdirSync( this.getImagesDir() );
+        }
+        if (!fs.existsSync( this.getFichesDir() )){
+            fs.mkdirSync( this.getFichesDir() );
         }
     }
 }

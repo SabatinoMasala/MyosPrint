@@ -3,21 +3,8 @@ import sharp from 'sharp'
 import Promise from 'bluebird'
 import fs from 'fs'
 import Dir from '@/helpers/Dir'
+import FicheResolver from '@/helpers/FicheResolver'
 const shell = require('electron').shell;
-
-let FICHES = {
-    classic: {
-        c: require('@/printers/classic/c.json'),
-        b: require('@/printers/classic/b.json'),
-    },
-    roll: {
-        b: require('@/printers/roll/b.json'),
-        c: require('@/printers/roll/c.json'),
-        neck: require('@/printers/roll/neck.json'),
-        mini_a: require('@/printers/roll/mini_a.json'),
-        mini_b: require('@/printers/roll/mini_b.json'),
-    }
-};
 
 export default {
     addText(doc, textArray, x, y) {
@@ -88,8 +75,8 @@ export default {
         doc.fontSize(7);
 
         let needsInfo = false;
-        if (FICHES[printer][size].settings) {
-            needsInfo = !!FICHES[printer][size].settings.info;
+        if (this.currentFiche.settings) {
+            needsInfo = !!this.currentFiche.settings.info;
         }
 
         let page = pages[index];
@@ -99,9 +86,9 @@ export default {
         let promises = [];
         Object.keys(page).forEach((part) => {
             page[part].forEach((data, index) => {
-                if (FICHES[printer][size].slots[part] !== undefined) {
-                    let position = FICHES[printer][size].slots[part][index];
-                    let dimensions = FICHES[printer][size].dimensions[part];
+                if (this.currentFiche.slots[part] !== undefined) {
+                    let position = this.currentFiche.slots[part][index];
+                    let dimensions = this.currentFiche.dimensions[part];
                     promises.push(this.addImage(doc, data, position, dimensions, needsInfo))
                 }
             })
@@ -119,10 +106,10 @@ export default {
         let printer = store.state.Settings.printer;
         let blankPages = store.state.Settings.pdf_blank_pages_before_labels;
 
-        let pageSize = 'a3';
-        if (FICHES[printer][size].size !== undefined) {
-            pageSize = FICHES[printer][size].size;
-        }
+        this.currentFiche = FicheResolver.getFiche(printer + '/' + size);
+
+        let pageSize = this.currentFiche.size;
+
         let doc = new PDFDocument({
             margin: 0,
             size: pageSize
