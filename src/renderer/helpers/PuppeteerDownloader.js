@@ -17,35 +17,34 @@ export default {
 
             DownloadConversionProgress.downloads++;
 
-            if (!url || url === '') {
-                return;
+            if (url && url !== '') {
+                let regex = /[^\/]+\.svg/;
+                let dest = Dir.getImagesDir() + '/' + regex.exec(url)[0];
+                dest = dest.replace('svg', 'png');
+
+                if (fs.existsSync( dest )) {
+                    continue;
+                }
+
+                await page.goto('https://www.makeyourownspirit.com/capture?svg=' + url);
+                await page.waitFor('.loaded');
+
+                const dimensions = await page.evaluate(() => {
+                    return {
+                        width: window.svgSize.width,
+                        height: window.svgSize.height,
+                        deviceScaleFactor: 2
+                    };
+                });
+                await page.setViewport(dimensions);
+
+                await page.screenshot({
+                    path: dest,
+                    type: 'png',
+                    // quality: 100
+                });
             }
 
-            let regex = /[^\/]+\.svg/;
-            let dest = Dir.getImagesDir() + '/' + regex.exec(url)[0];
-            dest = dest.replace('svg', 'png');
-
-            // if (fs.existsSync( dest )) {
-            //     continue;
-            // }
-
-            await page.goto('https://www.makeyourownspirit.com/capture?svg=' + url);
-            await page.waitFor('.loaded');
-
-            const dimensions = await page.evaluate(() => {
-                return {
-                    width: window.svgSize.width,
-                    height: window.svgSize.height,
-                    deviceScaleFactor: 2
-                };
-            });
-            await page.setViewport(dimensions);
-
-            await page.screenshot({
-                path: dest,
-                type: 'png',
-                // quality: 100
-            });
         }
 
         browser.close();

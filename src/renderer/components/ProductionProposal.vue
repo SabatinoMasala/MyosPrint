@@ -11,8 +11,11 @@
         <PPSettings></PPSettings>
 
         <div style="margin: 50px;">
-            <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
-            <el-button class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
+            <div class="text-center">
+                <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
+                <el-button class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
+                <el-button class="mb-1" @click="$router.push('/fiche-editor')">Edit roll fiches</el-button>
+            </div>
             <el-table :data="fiches" empty-text="No fiches" v-loading="loading" :element-loading-text="getLoadingText()">
                 <el-table-column
                         prop="size"

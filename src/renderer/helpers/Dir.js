@@ -11,8 +11,8 @@ export default {
     getImagesDir() {
         return this.getBaseDir() + '/images';
     },
-    getFichesDir() {
-        return this.getBaseDir() + '/fiches';
+    getFichesRollDir() {
+        return this.getBaseDir() + '/fiches-roll';
     },
     setup() {
         if (!fs.existsSync( this.getBaseDir() )){
@@ -24,8 +24,8 @@ export default {
         if (!fs.existsSync( this.getImagesDir() )){
             fs.mkdirSync( this.getImagesDir() );
         }
-        if (!fs.existsSync( this.getFichesDir() )){
-            fs.mkdirSync( this.getFichesDir() );
+        if (!fs.existsSync( this.getFichesRollDir() )){
+            fs.mkdirSync( this.getFichesRollDir() );
         }
     }
 }

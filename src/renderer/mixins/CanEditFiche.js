@@ -1,19 +1,39 @@
 export default {
     computed: {
+        availableTypes() {
+            return Object.keys(this.fiche.slots)
+        },
         canvasDimensions() {
             return this.fiche.size;
         },
-        slotsFront() {
-            return this.fiche.slots.front
-        },
         slotsBack() {
-            return this.fiche.slots.back
+            return this.slots('back');
+        },
+        slotsFront() {
+            return this.slots('front');
+        },
+        slotsNeck() {
+            return this.slots('neck');
         },
         dimensionsFront() {
-            return this.fiche.dimensions.front;
+            return this.dimensions('front');
         },
         dimensionsBack() {
-            return this.fiche.dimensions.back;
+            return this.dimensions('back');
+        },
+        dimensionsNeck() {
+            return this.dimensions('neck');
+        }
+    },
+    methods: {
+        isAvailableType(type) {
+            return this.availableTypes.indexOf(type) !== -1;
+        },
+        slots(type) {
+            return this.fiche.slots[type]
+        },
+        dimensions(type) {
+            return this.fiche.dimensions[type]
         }
     }
 }

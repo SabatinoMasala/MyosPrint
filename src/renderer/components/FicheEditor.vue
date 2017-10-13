@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-menu mode="horizontal">
-            <el-menu-item index="1">
+            <el-menu-item index="1" @click="$router.back()">
                 <i class="el-icon-caret-left"></i>
                 Back
             </el-menu-item>
@@ -19,15 +19,20 @@
                 </el-select>
             </el-col>
             <el-col class="text-right" :span="12">
+                <el-button type="danger" @click.stop.prevent="reset">Reset fiche</el-button>
                 <el-button @click.stop.prevent="downloadPDF">Download Sample PDF</el-button>
-                <el-button type="primary" @click.stop.prevent="$emit('update')">Update fiche</el-button>
+                <el-button type="primary" @click.stop.prevent="update">Update fiche</el-button>
             </el-col>
         </el-row>
 
         <el-row class="padded" v-if="fiche">
-            <el-col :span="12">
-                <FicheEditorPage :fiche="fiche"></FicheEditorPage>
-            </el-col>
+            <div class="fixed">
+                <FicheEditorPage
+                        ref="page"
+                        :fiche="fiche"
+                ></FicheEditorPage>
+            </div>
+            <el-col :span="12">&nbsp;</el-col>
             <el-col :span="12">
                 <FicheEditorValues
                         @update="update"
@@ -39,6 +44,14 @@
     </div>
 </template>
 <style lang="scss" scoped>
+    .fixed {
+        width: 50%;
+        height: 100%;
+        position: fixed;
+        top: 175px;
+        left: 10px;
+        z-index: 0;
+    }
     .padded {
         padding: 15px;
     }
@@ -48,6 +61,7 @@
 </style>
 <script>
     import fs from 'fs'
+    import PDFMaker from '@/helpers/PDFMaker'
     import CanEditFiche from '@/mixins/CanEditFiche'
     import FicheEditorPage from '@/components/FicheEditorPage'
     import FicheEditorValues from '@/components/FicheEditorValues'
@@ -66,19 +80,41 @@
         watch: {
             currentFiche() {
                 this.updateFiche();
+                this.$refs.page.zoom = 1;
             }
         },
         methods: {
+            reset() {
+                let path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                if (fs.existsSync(path)) {
+                    fs.unlinkSync(path);
+                }
+                this.updateFiche();
+                this.$notify({
+                    title: 'Complete!',
+                    message: 'Template has been reset to internal values',
+                    type: 'info',
+                })
+            },
             updateFiche() {
                 this.fiche = FicheResolver.getFiche('roll', this.currentFiche);
             },
             update() {
-                let path = Dir.getFichesDir() + '/' + '123' + '.json';
-                fs.writeFile(path, JSON.stringify(this.fiche, null, 2), 'utf8', function (err) {
+                let path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                fs.writeFile(path, JSON.stringify(this.fiche, null, 2), 'utf8', (err) => {
                     if (err) {
-                        return console.log(err);
+                        this.$notify({
+                            title: 'Error',
+                            message: 'Something went wrong while saving the template.',
+                            type: 'error',
+                        });
+                        return;
                     }
-                    console.log("The file was saved!");
+                    this.$notify({
+                        title: 'Saved!',
+                        message: 'Template updated',
+                        type: 'info',
+                    })
                 });
             },
             downloadPDF() {

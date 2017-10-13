@@ -106,7 +106,7 @@ export default {
         let printer = store.state.Settings.printer;
         let blankPages = store.state.Settings.pdf_blank_pages_before_labels;
 
-        this.currentFiche = FicheResolver.getFiche(printer + '/' + size);
+        this.currentFiche = FicheResolver.getFiche(printer, size);
 
         let pageSize = this.currentFiche.size;
 

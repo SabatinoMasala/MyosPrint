@@ -8,6 +8,10 @@ export default new Router({
         {
             path: '/',
             name: 'home',
+            component: require('@/components/Home')
+        }, {
+            path: '/fiche-editor',
+            name: 'fiche-editor',
             component: require('@/components/FicheEditor')
         },
         {
