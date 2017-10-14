@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import puppeteer from 'puppeteer'
 import Dir from '@/helpers/Dir'
 import fs from 'fs'
@@ -5,7 +6,33 @@ const isDev = process.env.NODE_ENV;
 import DownloadConversionProgress from '@/store/DownloadConversionProgress'
 
 export default {
-    async downloadSVGs(urls, store) {
+    getDownloadObjects(labels) {
+        return _.flatMap(labels, (label) => {
+            let arr = [
+                {
+                    type: 'front',
+                    designedBottle: label.proposal.orderBottle.designedBottle.id,
+                    url: label.frontLabelSVG
+                },
+                {
+                    type: 'back',
+                    designedBottle: label.proposal.orderBottle.designedBottle.id,
+                    url: label.backLabelSVG
+                },
+            ];
+            if (label.neckLabelSVG) {
+                arr.push({
+                    type: 'neck',
+                    designedBottle: label.proposal.orderBottle.designedBottle.id,
+                    url: label.neckLabelSVG
+                });
+            }
+            return arr;
+        });
+    },
+    async downloadSVGs(labels, store) {
+
+        let downloadObjects = this.getDownloadObjects(labels);
 
         const browser = await puppeteer.launch({
             // headless: false,
@@ -13,7 +40,9 @@ export default {
         });
         const page = await browser.newPage();
 
-        for (let url of urls) {
+        for (let downloadObject of downloadObjects) {
+
+            let url = downloadObject.url;
 
             DownloadConversionProgress.downloads++;
 
@@ -26,7 +55,9 @@ export default {
                     continue;
                 }
 
-                await page.goto('https://www.makeyourownspirit.com/capture?svg=' + url);
+                let myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
+                console.log(myosURL);
+                await page.goto(myosURL);
                 await page.waitFor('.loaded');
 
                 const dimensions = await page.evaluate(() => {

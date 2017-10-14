@@ -30,6 +30,7 @@
         <div v-if="isAvailableType('front')">
             <h1>Slots front</h1>
             <FicheEditorSlot
+                    name="front"
                     :index="index"
                     :key="index"
                     :current-slot="slot"
@@ -40,6 +41,7 @@
         <div v-if="isAvailableType('back')">
             <h1>Slots back</h1>
             <FicheEditorSlot
+                    name="back"
                     :index="index"
                     :key="index"
                     :current-slot="slot"
@@ -51,6 +53,7 @@
             <h1>Slots neck</h1>
             <FicheEditorSlot
                     :index="index"
+                    name="neck"
                     :key="index"
                     :current-slot="slot"
                     v-for="slot, index in slotsNeck"

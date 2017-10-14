@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <h2>Slot front #{{ index + 1 }}</h2>
+        <h2>Slot {{ name }} #{{ index + 1 }}</h2>
         <el-col :span="8">
             <p>X value</p>
             <el-input-number v-model="currentSlot.x"></el-input-number>
@@ -27,6 +27,7 @@
 <script>
     export default {
         props: {
+            name: String,
             currentSlot: Object,
             index: Number
         }

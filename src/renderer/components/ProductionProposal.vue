@@ -27,7 +27,7 @@
                 </el-table-column>
                 <el-table-column
                         label="Operations">
-                    <template scope="scope">
+                    <template slot-scope="scope">
                         <el-button :disabled="isDisabledButton(scope.$index)" type="primary" size="small" @click="makePDF(scope.$index)">
                             <span v-if="!isDisabledButton(scope.$index)">Get PDF</span>
                             <span v-else>This template is not available</span>
@@ -150,7 +150,7 @@
                 });
                 this.downloadConversionProgress.totalDownloads = urls.length;
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
-                await PuppeteerDownloader.downloadSVGs(urls, this.$store);
+                await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
                 this.loading = false;
                 this.downloadConversionProgress.reset();
             },

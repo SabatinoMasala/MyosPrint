@@ -114,7 +114,7 @@
         },
         data() {
             return {
-                zoom: 2
+                zoom: 1
             }
         }
     }
