@@ -1,8 +1,8 @@
 {
   "name": "myosprint",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "author": " <>",
-  "description": "An electron-vue project",
+  "description": "MYOS Print application",
   "license": null,
   "main": "./dist/electron/main.js",
   "scripts": {
