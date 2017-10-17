@@ -56,7 +56,6 @@ export default {
                 }
 
                 let myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
-                console.log(myosURL);
                 await page.goto(myosURL);
                 await page.waitFor('.loaded');
 
