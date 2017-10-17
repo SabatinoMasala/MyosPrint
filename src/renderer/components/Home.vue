@@ -25,11 +25,20 @@
                     </ul>
                 </el-card>
             </div>
+            <div class="version">
+                MyosPrint {{ getVersion() }}
+            </div>
         </div>
     </div>
 </template>
 
 <style lang="scss" scoped>
+    .version {
+        opacity: 0.4;
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+    }
     .history {
         margin-top: 30px;
         ul {
@@ -42,6 +51,7 @@
 
 <script>
 
+    const packagejson = require('../../../package.json');
     import store from 'store';
     import API from '@/helpers/api'
 
@@ -54,6 +64,9 @@
         mounted() {
         },
         methods: {
+            getVersion() {
+                return packagejson.version;
+            },
             getLink(item) {
                 return {
                     name: 'pp-detail',
