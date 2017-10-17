@@ -23,40 +23,48 @@ export default {
 
         let textArray = data.text;
 
+        let width = dimensions.width;
+        let height = dimensions.height;
+
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
-                sharp(image).rotate(position.rotation).toBuffer().then((data) => {
-                    let width = dimensions.width;
-                    let height = dimensions.height;
+                if (image !== false) {
+                    sharp(image).rotate(position.rotation).toBuffer().then((data) => {
 
-                    if (Math.abs(position.rotation) === 90) {
-                        doc.image(data, {
-                            width: height,
-                            height: width,
-                            x: position.x,
-                            y: position.y
-                        });
+                        if (Math.abs(position.rotation) === 90) {
+                            doc.image(data, {
+                                width: height,
+                                height: width,
+                                x: position.x,
+                                y: position.y
+                            });
 
-                        if (needsInfo) {
-                            this.addText(doc, textArray, position.x, position.y + width + margin);
+                            if (needsInfo) {
+                                this.addText(doc, textArray, position.x, position.y + width + margin);
+                            }
+
+                        } else {
+                            doc.image(data, {
+                                width: width,
+                                height: height,
+                                x: position.x,
+                                y: position.y
+                            });
+
+                            if (needsInfo) {
+                                this.addText(doc, textArray, position.x, position.y + width + margin);
+                            }
+
                         }
 
-                    } else {
-                        doc.image(data, {
-                            width: width,
-                            height: height,
-                            x: position.x,
-                            y: position.y
-                        });
-
-                        if (needsInfo) {
-                            this.addText(doc, textArray, position.x, position.y + width + margin);
-                        }
-
+                        resolve()
+                    })
+                } else {
+                    if (needsInfo) {
+                        this.addText(doc, textArray, position.x, position.y + width + margin);
                     }
-
-                    resolve()
-                })
+                    resolve();
+                }
             } else {
                 doc.image(image, {
                     width: dimensions.width,
