@@ -28,9 +28,11 @@ export default {
                 groupedLabels[size].forEach((label) => {
                     let neckLabel = Vue.util.extend({}, label);
                     neckLabel.is_neck = true;
-                    if (neckLabel.neckLabelSVG !== '' || neckLabel.neckLabelImage !== '') {
-                        groupedLabels['neck'].push(neckLabel);
+                    neckLabel.empty = false;
+                    if (neckLabel.neckLabelSVG === '' || neckLabel.neckLabelImage === '') {
+                        neckLabel.empty = true;
                     }
+                    groupedLabels['neck'].push(neckLabel);
                 });
             });
         }
@@ -121,10 +123,13 @@ export default {
                 for (let i = 0; i < label.amount; i++) {
                     let regex = /[^\/]+\.(svg|png)/;
 
-                    let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
+                    let neck;
+                    if (!label.empty) {
+                        let neckLabelFile = (label.neckLabelSVG && label.neckLabelSVG !== '') ? label.neckLabelSVG : label.neckLabelImage;
 
-                    let matches = regex.exec(neckLabelFile);
-                    let neck = matches[0].replace('.svg', '.png');
+                        let matches = regex.exec(neckLabelFile);
+                        neck = matches[0].replace('.svg', '.png');
+                    }
                     let combo = label.size + label.bottle_class;
                     if (combinations[combo] === undefined) {
                         combinations[combo] = {
@@ -145,7 +150,7 @@ export default {
                             drinkSlug + '-' + bottleSlug,
                             bottle + combo + combinations[combo].count,
                         ],
-                        image: Dir.getImagesDir() + '/' + neck
+                        image: !label.empty ? Dir.getImagesDir() + '/' + neck : false
                     });
 
                     combinations[combo].count++;
