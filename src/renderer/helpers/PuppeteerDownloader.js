@@ -56,17 +56,31 @@ export default {
                 }
 
                 let myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
+                // console.log(myosURL);
+                // let myosURL = 'http://www.myos.dev/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
                 await page.goto(myosURL);
                 await page.waitFor('.loaded');
 
-                const dimensions = await page.evaluate(() => {
-                    return {
-                        width: window.svgSize.width,
-                        height: window.svgSize.height,
-                        deviceScaleFactor: 2
-                    };
-                });
-                await page.setViewport(dimensions);
+                // Hacky fix for changing device scale factor, better implementation would be that this app knows if the images are prerendered or not
+                if (url.indexOf('bulk') === -1) {
+                    const dimensions = await page.evaluate(() => {
+                        return {
+                            width: window.svgSize.width,
+                            height: window.svgSize.height,
+                            deviceScaleFactor: 2
+                        };
+                    });
+                    await page.setViewport(dimensions);
+                } else {
+                    const dimensions = await page.evaluate(() => {
+                        return {
+                            width: window.svgSize.width,
+                            height: window.svgSize.height,
+                            deviceScaleFactor: 1
+                        };
+                    });
+                    await page.setViewport(dimensions);
+                }
 
                 await page.screenshot({
                     path: dest,
