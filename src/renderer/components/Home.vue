@@ -53,7 +53,7 @@
 
     const packagejson = require('../../../package.json');
     import store from 'store';
-    import API from '@/helpers/api'
+    import API from '@/helpers/api';
 
     export default {
         computed: {
