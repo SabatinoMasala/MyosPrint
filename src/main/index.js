@@ -1,4 +1,4 @@
-// require('electron-debug')({ showDevTools: true, enabled: true})
+require('electron-debug')({ showDevTools: false, enabled: true})
 
 import Raven from 'raven';
 Raven.config('https://5ad90cc5806d47f98270c1d39783a007:fb9708093a064d72a324b0db21b6961f@sentry.io/257702').install();

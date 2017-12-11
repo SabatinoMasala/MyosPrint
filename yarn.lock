@@ -2431,7 +2431,7 @@ electron-builder@19.27.0:
     uuid-1345 "^0.99.6"
     yargs "^8.0.2"
 
-electron-debug@^1.1.0:
+electron-debug@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/electron-debug/-/electron-debug-1.4.0.tgz#bec7005522220a9d0622153352e1bbff0f37af2e"
   dependencies:
