@@ -79,7 +79,7 @@
                         neckLabelImage: proposal.orderBottle.designedBottle.neckLabel,
                         frontLabelSVG: proposal.orderBottle.designedBottle.frontLabelSVG,
                         backLabelSVG: proposal.orderBottle.designedBottle.backLabelSVG,
-                        neckLabelSVG: proposal.orderBottle.designedBottle.neckLabelSVG,
+                        neckLabelSVG: proposal.orderBottle.designedBottle.neckLabelSVG
                     };
                 })
             },

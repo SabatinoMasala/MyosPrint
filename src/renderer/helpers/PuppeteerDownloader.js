@@ -12,19 +12,22 @@ export default {
                 {
                     type: 'front',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
-                    url: label.frontLabelSVG
+                    svgUrl: label.frontLabelSVG,
+                    url: label.frontLabelImage
                 },
                 {
                     type: 'back',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
-                    url: label.backLabelSVG
+                    svgUrl: label.backLabelSVG,
+                    url: label.backLabelImage
                 },
             ];
             if (label.neckLabelSVG) {
                 arr.push({
                     type: 'neck',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
-                    url: label.neckLabelSVG
+                    svgUrl: label.neckLabelSVG,
+                    url: label.neckLabelImage
                 });
             }
             return arr;
@@ -42,54 +45,57 @@ export default {
 
         for (let downloadObject of downloadObjects) {
 
-            let url = downloadObject.url;
-
-            DownloadConversionProgress.downloads++;
-
-            if (url && url !== '') {
+            let myosURL = '';
+            let dest = '';
+            // Older designed bottles don't have an SVG
+            if (downloadObject.svgUrl && downloadObject.svgUrl !== '') {
+                DownloadConversionProgress.downloads++;
                 let regex = /[^\/]+\.svg/;
-                let dest = Dir.getImagesDir() + '/' + regex.exec(url)[0];
+                dest = Dir.getImagesDir() + '/' + regex.exec(downloadObject.svgUrl)[0];
                 dest = dest.replace('svg', 'png');
-
-                if (fs.existsSync( dest )) {
+                if (fs.existsSync(dest)) {
                     continue;
                 }
-
-                let myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
-                // console.log(myosURL);
-                // let myosURL = 'http://www.myos.dev/capture?svg=' + url + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
-                console.log(myosURL);
-
-                await page.goto(myosURL);
-                await page.waitFor('.loaded');
-
-                // Hacky fix for changing device scale factor, better implementation would be that this app knows if the images are prerendered or not
-                if (url.indexOf('bulk') === -1) {
-                    const dimensions = await page.evaluate(() => {
-                        return {
-                            width: window.svgSize.width,
-                            height: window.svgSize.height,
-                            deviceScaleFactor: 2
-                        };
-                    });
-                    await page.setViewport(dimensions);
-                } else {
-                    const dimensions = await page.evaluate(() => {
-                        return {
-                            width: window.svgSize.width,
-                            height: window.svgSize.height,
-                            deviceScaleFactor: 1
-                        };
-                    });
-                    await page.setViewport(dimensions);
+                myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + downloadObject.svgUrl + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
+            } else {
+                DownloadConversionProgress.downloads++;
+                let regex = /[^\/]+\.png/;
+                dest = Dir.getImagesDir() + '/' + regex.exec(downloadObject.url)[0];
+                if (fs.existsSync(dest)) {
+                    continue;
                 }
-
-                await page.screenshot({
-                    path: dest,
-                    type: 'png',
-                    // quality: 100
-                });
+                myosURL = 'https://www.makeyourownspirit.com/capture?type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
             }
+
+            await page.goto(myosURL);
+            await page.waitFor('.loaded');
+
+            // Hacky fix for changing device scale factor, better implementation would be that this app knows if the images are prerendered or not
+            if (downloadObject.svgUrl.indexOf('bulk') === -1) {
+                const dimensions = await page.evaluate(() => {
+                    return {
+                        width: window.svgSize.width,
+                        height: window.svgSize.height,
+                        deviceScaleFactor: 2
+                    };
+                });
+                await page.setViewport(dimensions);
+            } else {
+                const dimensions = await page.evaluate(() => {
+                    return {
+                        width: window.svgSize.width,
+                        height: window.svgSize.height,
+                        deviceScaleFactor: 1
+                    };
+                });
+                await page.setViewport(dimensions);
+            }
+
+            await page.screenshot({
+                path: dest,
+                type: 'png',
+                // quality: 100
+            });
 
         }
 
