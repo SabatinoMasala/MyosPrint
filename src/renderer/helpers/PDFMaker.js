@@ -29,36 +29,42 @@ export default {
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
                 if (image !== false) {
-                    sharp(image).rotate(position.rotation).toBuffer().then((data) => {
+                    sharp(image)
+                        .rotate(position.rotation)
+                        .toBuffer()
+                        .then((data) => {
 
-                        if (Math.abs(position.rotation) === 90) {
-                            doc.image(data, {
-                                width: height,
-                                height: width,
-                                x: position.x,
-                                y: position.y
-                            });
+                            if (Math.abs(position.rotation) === 90) {
+                                doc.image(data, {
+                                    width: height,
+                                    height: width,
+                                    x: position.x,
+                                    y: position.y
+                                });
 
-                            if (needsInfo) {
-                                this.addText(doc, textArray, position.x, position.y + width + margin);
+                                if (needsInfo) {
+                                    this.addText(doc, textArray, position.x, position.y + width + margin);
+                                }
+
+                            } else {
+                                doc.image(data, {
+                                    width: width,
+                                    height: height,
+                                    x: position.x,
+                                    y: position.y
+                                });
+
+                                if (needsInfo) {
+                                    this.addText(doc, textArray, position.x, position.y + width + margin);
+                                }
+
                             }
 
-                        } else {
-                            doc.image(data, {
-                                width: width,
-                                height: height,
-                                x: position.x,
-                                y: position.y
-                            });
-
-                            if (needsInfo) {
-                                this.addText(doc, textArray, position.x, position.y + width + margin);
-                            }
-
-                        }
-
-                        resolve()
-                    })
+                            resolve()
+                        })
+                        .catch(error => {
+                            resolve();
+                        })
                 } else {
                     if (needsInfo) {
                         this.addText(doc, textArray, position.x, position.y + width + margin);
