@@ -74,6 +74,7 @@
                         amount:proposal.orderBottle.amount,
                         size: proposal.orderBottle.designedBottle.label.size.toLowerCase(),
                         bottle_class: bottleClass,
+                        is_hdpi: proposal.orderBottle.designedBottle.is_hdpi,
                         frontLabelImage: proposal.orderBottle.designedBottle.frontLabel,
                         backLabelImage: proposal.orderBottle.designedBottle.backLabel,
                         neckLabelImage: proposal.orderBottle.designedBottle.neckLabel,

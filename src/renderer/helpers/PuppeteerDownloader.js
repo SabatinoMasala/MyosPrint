@@ -13,12 +13,14 @@ export default {
                     type: 'front',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
                     svgUrl: label.frontLabelSVG,
+                    is_hdpi: label.is_hdpi,
                     url: label.frontLabelImage
                 },
                 {
                     type: 'back',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
                     svgUrl: label.backLabelSVG,
+                    is_hdpi: label.is_hdpi,
                     url: label.backLabelImage
                 },
             ];
@@ -27,6 +29,7 @@ export default {
                     type: 'neck',
                     designedBottle: label.proposal.orderBottle.designedBottle.id,
                     svgUrl: label.neckLabelSVG,
+                    is_hdpi: label.is_hdpi,
                     url: label.neckLabelImage
                 });
             }
@@ -70,8 +73,7 @@ export default {
             await page.goto(myosURL);
             await page.waitFor('.loaded');
 
-            // Hacky fix for changing device scale factor, better implementation would be that this app knows if the images are prerendered or not
-            if (downloadObject.svgUrl.indexOf('bulk') === -1) {
+            if (!downloadObject.is_hdpi) {
                 const dimensions = await page.evaluate(() => {
                     return {
                         width: window.svgSize.width,
