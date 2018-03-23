@@ -5,8 +5,17 @@
 </template>
 
 <script>
+    import store from 'store';
     export default {
-        name: 'myosprint'
+        name: 'myosprint',
+        beforeCreate() {
+            this.$store.commit('INIT_SETTINGS');
+        },
+        mounted() {
+            this.$store.subscribe((mutation, state) => {
+                store.set('settings', state.Settings);
+            });
+        }
     }
 </script>
 

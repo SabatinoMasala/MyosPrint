@@ -16,7 +16,7 @@ export default {
             }
         });
     },
-    addImage(doc, data, position, dimensions, needsInfo) {
+    addImage(doc, data, position, dimensions, needsInfo, size, orientation) {
 
         let margin = 5;
         let image = data.image;
@@ -25,12 +25,16 @@ export default {
 
         let width = dimensions.width;
         let height = dimensions.height;
+        let printerRotation = 0;
+        if (size !== 'neck' && orientation === 'tl') {
+            printerRotation = 180;
+        }
 
         return new Promise((resolve, reject) => {
             if (position.rotation !== undefined) {
                 if (image !== false) {
                     sharp(image)
-                        .rotate(position.rotation)
+                        .rotate(position.rotation + printerRotation)
                         .toBuffer()
                         .then((data) => {
 
@@ -84,7 +88,7 @@ export default {
     },
 
     // This needs to be a recursive function instead of a for-loop because of race conditions with page creation
-    makeNextPage(printer, pages, doc, size, index, createNewPageFirst, allDoneCallback) {
+    makeNextPage(orientation, printer, pages, doc, size, index, createNewPageFirst, allDoneCallback) {
 
         doc.fontSize(7);
 
@@ -103,13 +107,13 @@ export default {
                 if (this.currentFiche.slots[part] !== undefined) {
                     let position = this.currentFiche.slots[part][index];
                     let dimensions = this.currentFiche.dimensions[part];
-                    promises.push(this.addImage(doc, data, position, dimensions, needsInfo))
+                    promises.push(this.addImage(doc, data, position, dimensions, needsInfo, size, orientation))
                 }
             })
         });
         Promise.all(promises).then(() => {
             if (pages.length - 1 > index) {
-                this.makeNextPage(printer, pages, doc, size, index + 1, true, allDoneCallback)
+                this.makeNextPage(orientation, printer, pages, doc, size, index + 1, true, allDoneCallback)
             } else {
                 allDoneCallback();
             }
@@ -117,8 +121,9 @@ export default {
     },
     makePDF(store, pages, size, filename) {
 
-        let printer = store.state.Settings.printer;
-        let blankPages = store.state.Settings.pdf_blank_pages_before_labels;
+        const printer = store.state.Settings.printer;
+        const blankPages = store.state.Settings.pdf_blank_pages_before_labels;
+        const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
 
@@ -137,8 +142,12 @@ export default {
         }
 
         return new Promise((resolve, reject) => {
-            this.makeNextPage(printer, pages, doc, size, 0, labelsNeedNewPage, () => {
-                let path = Dir.getPDFDir() + '/' + filename + '.pdf';
+            this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
+                let path = Dir.getPDFDir() + '/' + filename;
+                if (size !== 'neck') {
+                    path += '_' + orientation;
+                }
+                path +=  '.pdf';
                 let file = fs.createWriteStream(path);
                 doc.pipe(file);
                 doc.end();

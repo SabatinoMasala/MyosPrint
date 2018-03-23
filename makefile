@@ -1,4 +1,4 @@
 release:
-	yarn install
-	yarn build-mac
-	yarn sign
+	npm install
+	npm run build-mac
+	npm run sign

@@ -21,6 +21,18 @@
             PDF Blank pages
         </h2>
         <el-input-number v-model="blankPages" :min="0"></el-input-number>
+        <h2>
+            Label orientation
+        </h2>
+        <el-select v-model="orientation" placeholder="Select orientation">
+            <el-option
+                    v-for="item in orientationOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :disabled="item.disabled"
+                    :value="item.value">
+            </el-option>
+        </el-select>
     </el-dialog>
 </template>
 
@@ -58,6 +70,14 @@
                     this.$store.commit('SWITCH_PRINTER', value);
                 }
             },
+            orientation: {
+                get() {
+                    return this.$store.state.Settings.orientation
+                },
+                set(value) {
+                    this.$store.commit('SWITCH_ORIENTATION', value);
+                }
+            },
         },
         methods: {
             closeModals() {
@@ -74,6 +94,16 @@
                     {
                         value: 'roll',
                         label: 'Roll printer',
+                    }
+                ],
+                orientationOptions: [
+                    {
+                        value: 'tr',
+                        label: 'Top right (default)',
+                    },
+                    {
+                        value: 'tl',
+                        label: 'Top Left',
                     }
                 ]
             }

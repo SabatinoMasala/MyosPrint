@@ -68,6 +68,11 @@ function createWindow () {
             accelerator: 'CmdOrCtrl+A',
             selector: 'selectAll:'
         }]
+    }, {
+        role: 'help',
+        submenu: [
+            {role: 'toggledevtools'}
+        ]
     }];
     let osxMenu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(osxMenu);
