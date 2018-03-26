@@ -1,4 +1,4 @@
-release:
+release-mac:
 	npm install
 	npm run build-mac
 	npm run sign
