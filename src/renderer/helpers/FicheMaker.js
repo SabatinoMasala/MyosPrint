@@ -8,11 +8,11 @@ export default {
 
         // Labels are ordered by bottle class
         labels = _.orderBy(labels, function(item) {
-            return [item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.slug]
+            return [item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name]
         });
 
         // labels.forEach((label) => {
-        //     console.log(label.bottle_class, label.proposal.orderBottle.designedBottle.bottle.slug)
+        //     console.log(label.bottle_class, label.proposal.orderBottle.designedBottle.bottle.internal_short_name)
         // });
 
         let groupedLabels = _.groupBy(labels, 'size');
@@ -137,13 +137,7 @@ export default {
                         }
                     }
                     let drinkSlug = label.proposal.orderBottle.designedBottle.drink.slug.substring(0, 5);
-                    let bottleSlug = label.proposal.orderBottle.designedBottle.bottle.slug.substring(0, 5);
-                    if (label.proposal.orderBottle.designedBottle.bottle.slug === 'apotheque') {
-                        bottleSlug = 'apoth';
-                    }
-                    if (label.proposal.orderBottle.designedBottle.bottle.slug === 'apotheque-brun') {
-                        bottleSlug = 'apo brun';
-                    }
+                    let bottleSlug = label.proposal.orderBottle.designedBottle.bottle.internal_short_name;
                     pages[currentPageIndex].neck.push({
                         text: [
                             label.proposal.order.hashId,
