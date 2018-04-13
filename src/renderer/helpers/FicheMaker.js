@@ -4,11 +4,28 @@ import Dir from '@/helpers/Dir'
 
 export default {
 
-    getFichesFromLabels(printer, labels) {
+    getFichesFromLabels(printer, sorting, labels) {
 
-        // Labels are ordered by bottle class
-        labels = _.orderBy(labels, function(item) {
-            return [item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name]
+        if (sorting === 'labelling') {
+            labels = _.orderBy(labels, function(item) {
+                return [item.size, item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name, item.proposal.orderBottle.designedBottle.drink.slug, item.proposal.order.order.timestamp];
+            });
+        }
+        if (sorting === 'bottling') {
+            labels = _.orderBy(labels, function(item) {
+                return [item.size, item.proposal.orderBottle.designedBottle.drink.slug, item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name, item.proposal.order.order.timestamp];
+            });
+        }
+
+        console.log(`Sorting: ${sorting}`);
+        labels.map(item => {
+            console.log([
+                item.size,
+                item.proposal.orderBottle.designedBottle.drink.slug,
+                item.bottle_class,
+                item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
+                item.proposal.order.order.timestamp
+            ]);
         });
 
         // labels.forEach((label) => {
@@ -130,7 +147,7 @@ export default {
                         let matches = regex.exec(neckLabelFile);
                         neck = matches[0].replace('.svg', '.png');
                     }
-                    let combo = label.size + label.bottle_class;
+                    let combo = label.size;
                     if (combinations[combo] === undefined) {
                         combinations[combo] = {
                             count: 1
@@ -142,7 +159,7 @@ export default {
                         text: [
                             label.proposal.order.hashId,
                             drinkSlug + '-' + bottleSlug,
-                            bottle + combo + combinations[combo].count,
+                            combo + combinations[combo].count,
                         ],
                         image: !label.empty ? Dir.getImagesDir() + '/' + neck : false
                     });

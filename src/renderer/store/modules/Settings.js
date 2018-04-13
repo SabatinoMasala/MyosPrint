@@ -5,6 +5,7 @@ const state = {
     orientation: 'tr',
     pdf_blank_pages_before_labels: 0,
     svg_quality: 1000,
+    sorting: 'labelling',
     extension: 'jpeg',
 };
 
@@ -38,6 +39,16 @@ const mutations = {
                 break;
             case 'tr':
                 state.orientation = 'tr';
+                break;
+        }
+    },
+    SWITCH_SORTING(state, value) {
+        switch (value) {
+            case 'labelling':
+                state.sorting = 'labelling';
+                break;
+            case 'bottling':
+                state.sorting = 'bottling';
                 break;
         }
     }

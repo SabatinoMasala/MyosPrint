@@ -33,6 +33,18 @@
                     :value="item.value">
             </el-option>
         </el-select>
+        <h2>
+            Label sorting in PDF
+        </h2>
+        <el-select v-model="sorting" placeholder="Select sorting">
+            <el-option
+                    v-for="item in sortingOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :disabled="item.disabled"
+                    :value="item.value">
+            </el-option>
+        </el-select>
     </el-dialog>
 </template>
 
@@ -78,6 +90,14 @@
                     this.$store.commit('SWITCH_ORIENTATION', value);
                 }
             },
+            sorting: {
+                get() {
+                    return this.$store.state.Settings.sorting
+                },
+                set(value) {
+                    this.$store.commit('SWITCH_SORTING', value);
+                }
+            },
         },
         methods: {
             closeModals() {
@@ -104,6 +124,16 @@
                     {
                         value: 'tl',
                         label: 'Top Left',
+                    }
+                ],
+                sortingOptions: [
+                    {
+                        value: 'labelling',
+                        label: 'Order Labelling',
+                    },
+                    {
+                        value: 'bottling',
+                        label: 'Order Bottling',
                     }
                 ]
             }

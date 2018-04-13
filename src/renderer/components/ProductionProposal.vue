@@ -8,7 +8,8 @@
             </el-menu-item>
         </el-menu>
 
-        <PPSettings></PPSettings>
+        <PPSettings />
+        <OrientationSettings />
 
         <div style="margin: 50px;">
             <div class="text-center">
@@ -49,6 +50,7 @@
     import PDFMaker from '@/helpers/PDFMaker'
     import Promise from 'bluebird'
     import PPSettings from '@/components/PPSettings.vue'
+    import OrientationSettings from '@/components/OrientationSettings.vue'
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
     import PuppeteerDownloader from "../helpers/PuppeteerDownloader";
 
@@ -57,11 +59,12 @@
             '$route': 'updateRoute',
         },
         components: {
-            PPSettings
+            PPSettings,
+            OrientationSettings
         },
         computed: {
             fiches() {
-                return FicheMaker.getFichesFromLabels(this.$store.state.Settings.printer, this.labels)
+                return FicheMaker.getFichesFromLabels(this.$store.state.Settings.printer, this.$store.state.Settings.sorting, this.labels)
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
@@ -69,6 +72,7 @@
                     if (proposal.orderBottle.designedBottle.bottle.class !== null) {
                         bottleClass = proposal.orderBottle.designedBottle.bottle.class.toLowerCase();
                     }
+                    // proposal.orderBottle.designedBottle.drink.slug = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'][Math.floor(Math.random() * 8)] + '-drink';
                     return {
                         proposal: proposal,
                         amount:proposal.orderBottle.amount,
@@ -112,6 +116,7 @@
                     .then((response) => {
                         this.productionProposal = response.data['production-proposal'];
                         this.captureSVGs();
+                        this.openModal('modal-orientation');
                     })
                     .catch((error) => {
                     })

@@ -10,14 +10,14 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import Raven from 'raven-js';
-import RavenVue from 'raven-js/plugins/vue';
-Raven
-    .config('https://5ad90cc5806d47f98270c1d39783a007@sentry.io/257702')
-    .addPlugin(RavenVue, Vue)
-    .install();
+// import Raven from 'raven-js';
+// import RavenVue from 'raven-js/plugins/vue';
+// Raven
+//     .config('https://5ad90cc5806d47f98270c1d39783a007@sentry.io/257702')
+//     .addPlugin(RavenVue, Vue)
+//     .install();
 
-Raven.context(function () {
+function setup() {
     Vue.use(ElementUI);
     Dir.setup();
 
@@ -43,4 +43,9 @@ Raven.context(function () {
     deeplink.matchIfNeeded( ipcRenderer.sendSync('get-deeplink'), router );
 
     window.router = router;
-});
+}
+//
+// Raven.context(function () {
+//     setup();
+// });
+setup();
