@@ -129,11 +129,11 @@
                 sortingOptions: [
                     {
                         value: 'labelling',
-                        label: 'Order Labelling',
+                        label: 'Neck first',
                     },
                     {
                         value: 'bottling',
-                        label: 'Order Bottling',
+                        label: 'Neck last',
                     }
                 ]
             }

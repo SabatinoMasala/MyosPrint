@@ -8,25 +8,46 @@ export default {
 
         if (sorting === 'labelling') {
             labels = _.orderBy(labels, function(item) {
-                return [item.size, item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name, item.proposal.orderBottle.designedBottle.drink.slug, item.proposal.order.order.timestamp];
+                return [
+                    item.size,
+                    item.bottle_class,
+                    item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
+                    item.proposal.orderBottle.designedBottle.drink.slug,
+                    item.proposal.order.order.timestamp
+                ];
+            });
+            console.log(`Sorting: ${sorting}`);
+            labels.map(item => {
+                console.log([
+                    item.size,
+                    item.bottle_class,
+                    item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
+                    item.proposal.orderBottle.designedBottle.drink.slug,
+                    item.proposal.order.order.timestamp
+                ]);
             });
         }
         if (sorting === 'bottling') {
             labels = _.orderBy(labels, function(item) {
-                return [item.size, item.proposal.orderBottle.designedBottle.drink.slug, item.bottle_class, item.proposal.orderBottle.designedBottle.bottle.internal_short_name, item.proposal.order.order.timestamp];
+                return [
+                    item.size,
+                    item.proposal.orderBottle.designedBottle.drink.slug,
+                    item.bottle_class,
+                    item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
+                    item.proposal.order.order.timestamp
+                ];
+            });
+            console.log(`Sorting: ${sorting}`);
+            labels.map(item => {
+                console.log([
+                    item.size,
+                    item.proposal.orderBottle.designedBottle.drink.slug,
+                    item.bottle_class,
+                    item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
+                    item.proposal.order.order.timestamp
+                ]);
             });
         }
-
-        console.log(`Sorting: ${sorting}`);
-        labels.map(item => {
-            console.log([
-                item.size,
-                item.proposal.orderBottle.designedBottle.drink.slug,
-                item.bottle_class,
-                item.proposal.orderBottle.designedBottle.bottle.internal_short_name,
-                item.proposal.order.order.timestamp
-            ]);
-        });
 
         // labels.forEach((label) => {
         //     console.log(label.bottle_class, label.proposal.orderBottle.designedBottle.bottle.internal_short_name)

@@ -9,13 +9,13 @@
         </el-menu>
 
         <PPSettings />
-        <OrientationSettings />
+        <QuickSettings />
 
         <div style="margin: 50px;">
             <div class="text-center">
                 <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
-                <el-button class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
-                <el-button class="mb-1" @click="$router.push('/fiche-editor')">Edit roll fiches</el-button>
+                <el-button :disabled="loading" class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
+                <el-button :disabled="loading" class="mb-1" @click="$router.push('/fiche-editor')">Edit roll fiches</el-button>
             </div>
             <el-table :data="fiches" empty-text="No fiches" v-loading="loading" :element-loading-text="getLoadingText()">
                 <el-table-column
@@ -50,7 +50,7 @@
     import PDFMaker from '@/helpers/PDFMaker'
     import Promise from 'bluebird'
     import PPSettings from '@/components/PPSettings.vue'
-    import OrientationSettings from '@/components/OrientationSettings.vue'
+    import QuickSettings from '@/components/QuickSettings.vue'
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
     import PuppeteerDownloader from "../helpers/PuppeteerDownloader";
 
@@ -60,7 +60,7 @@
         },
         components: {
             PPSettings,
-            OrientationSettings
+            QuickSettings
         },
         computed: {
             fiches() {
@@ -116,7 +116,6 @@
                     .then((response) => {
                         this.productionProposal = response.data['production-proposal'];
                         this.captureSVGs();
-                        this.openModal('modal-orientation');
                     })
                     .catch((error) => {
                     })
@@ -158,6 +157,7 @@
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
                 this.loading = false;
+                this.openModal('modal-orientation');
                 this.downloadConversionProgress.reset();
             },
             makePDF(index) {
