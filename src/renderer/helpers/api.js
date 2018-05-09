@@ -1,2 +1,2 @@
-// export default 'https://backend-api.makeyourownspirit.com'
-export default 'http://backend-api.myos.localhost'
+export default 'https://backend-api.makeyourownspirit.com'
+// export default 'http://backend-api.myos.localhost'
