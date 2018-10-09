@@ -5,46 +5,77 @@
             :before-close="closeModals"
             size="small"
             :visible="currentModal == 'modal-settings'">
-        <h2>
-            Fiches
-        </h2>
-        <el-select v-model="printer" placeholder="Select">
-            <el-option
-                    v-for="item in printerOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :disabled="item.disabled"
-                    :value="item.value">
-            </el-option>
-        </el-select>
-        <h2>
-            PDF Blank pages
-        </h2>
-        <el-input-number v-model="blankPages" :min="0"></el-input-number>
-        <h2>
-            Label orientation
-        </h2>
-        <el-select v-model="orientation" placeholder="Select orientation">
-            <el-option
-                    v-for="item in orientationOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :disabled="item.disabled"
-                    :value="item.value">
-            </el-option>
-        </el-select>
-        <h2>
-            Label sorting in PDF
-        </h2>
-        <el-select v-model="sorting" placeholder="Select sorting">
-            <el-option
-                    v-for="item in sortingOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :disabled="item.disabled"
-                    :value="item.value">
-            </el-option>
-        </el-select>
+        <el-row>
+            <el-col :span="24">
+                <h1>
+                    General settings
+                </h1>
+            </el-col>
+            <el-col :span="24">
+                <h2>
+                    Printer
+                </h2>
+                <el-select v-model="printer" placeholder="Select">
+                    <el-option
+                            v-for="item in printerOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :disabled="item.disabled"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row class="mt-1">
+            <el-col :span="24">
+                <h1>PDF Settings</h1>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blank pages start
+                </h2>
+                <el-input-number v-model="blankPagesStart" :min="0"></el-input-number>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blank pages end
+                </h2>
+                <el-input-number v-model="blankPagesEnd" :min="0"></el-input-number>
+            </el-col>
+        </el-row>
+        <el-row class="mt-1">
+            <el-col :span="24">
+                <h1>Label settings</h1>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Label orientation
+                </h2>
+                <el-select v-model="orientation" placeholder="Select orientation">
+                    <el-option
+                            v-for="item in orientationOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :disabled="item.disabled"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Label sorting in PDF
+                </h2>
+                <el-select v-model="sorting" placeholder="Select sorting">
+                    <el-option
+                            v-for="item in sortingOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :disabled="item.disabled"
+                            :value="item.value">
+                    </el-option>
+                </el-select>
+            </el-col>
+        </el-row>
     </el-dialog>
 </template>
 
@@ -54,13 +85,23 @@
             currentModal() {
                 return this.$store.state.Modals.current_modal
             },
-            blankPages: {
+            blankPagesStart: {
                 get() {
                     return this.$store.state.Settings.pdf_blank_pages_before_labels
                 },
                 set(value) {
                     if (this.$store.state.Settings.pdf_blank_pages_before_labels !== value) {
                         this.$store.commit('UPDATE_PDF_BLANK_PAGES_BEFORE_LABELS', value);
+                    }
+                }
+            },
+            blankPagesEnd: {
+                get() {
+                    return this.$store.state.Settings.pdf_blank_pages_after_labels
+                },
+                set(value) {
+                    if (this.$store.state.Settings.pdf_blank_pages_after_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLANK_PAGES_AFTER_LABELS', value);
                     }
                 }
             },
@@ -113,7 +154,11 @@
                     },
                     {
                         value: 'roll',
-                        label: 'Roll printer',
+                        label: 'Non-blackmark printer',
+                    },
+                    {
+                        value: 'blackmark',
+                        label: 'Blackmark printer',
                     }
                 ],
                 orientationOptions: [

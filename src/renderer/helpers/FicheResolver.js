@@ -24,21 +24,22 @@ let FICHES = {
 
 export default {
     getFiche(type, name) {
-
         let file = false;
         if (type === 'roll') {
             file = Dir.getFichesRollDir() + '/' + name + '.json';
         } else if (type === 'blackmark') {
             file = Dir.getFichesBlackmarkDir() + '/' + name + '.json';
         } else {
-            throw new Error('Printer not found');
+            return this.getDefault(type, name);
         }
-
         if (fs.existsSync(file)) {
             let json = fs.readFileSync(file, 'utf-8');
             return JSON.parse(json);
         } else {
-            return JSON.parse(JSON.stringify( FICHES[type][name] ));
+            return this.getDefault(type, name);
         }
+    },
+    getDefault(type, name) {
+        return JSON.parse(JSON.stringify( FICHES[type][name] ));
     }
 }

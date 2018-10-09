@@ -59,6 +59,15 @@
     .mt-0 {
         margin-top: 0;
     }
+    .mt-1 {
+        margin-top: 1rem;
+    }
+    .mt-2 {
+        margin-top: 2rem;
+    }
+    .mt-3 {
+        margin-top: 3rem;
+    }
     .pt-0 {
         padding-top: 0;
     }

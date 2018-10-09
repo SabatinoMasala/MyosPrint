@@ -32,6 +32,7 @@
             <FicheEditorSlot
                     name="front"
                     :index="index"
+                    :fiche="fiche"
                     :key="index"
                     :current-slot="slot"
                     v-for="slot, index in slotsFront"
@@ -42,6 +43,7 @@
             <h1>Slots back</h1>
             <FicheEditorSlot
                     name="back"
+                    :fiche="fiche"
                     :index="index"
                     :key="index"
                     :current-slot="slot"
@@ -53,6 +55,7 @@
             <h1>Slots neck</h1>
             <FicheEditorSlot
                     :index="index"
+                    :fiche="fiche"
                     name="neck"
                     :key="index"
                     :current-slot="slot"

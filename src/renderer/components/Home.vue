@@ -1,6 +1,13 @@
 <template>
     <div class="d-flex" style="height: 100vh">
+
+        <PPSettings />
+
         <div class="m-auto">
+            <div class="text-center">
+                <el-button class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
+                <el-button class="mb-1" @click="$router.push('/fiche-editor')">Edit fiches</el-button>
+            </div>
             <h1 class="mt-0 text-center">Enter production proposal ID to get started</h1>
             <el-row :gutter="10">
                 <el-col :span="12" :offset="2">
@@ -52,10 +59,16 @@
 <script>
 
     const packagejson = require('../../../package.json');
+    import OpensModals from '@/mixins/OpensModals'
+    import PPSettings from '@/components/PPSettings.vue'
     import store from 'store';
     import API from '@/helpers/api';
 
     export default {
+        mixins: [OpensModals],
+        components: {
+            PPSettings
+        },
         computed: {
             canContinue() {
                 return this.productionProposalID.length > 0

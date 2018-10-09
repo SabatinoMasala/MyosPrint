@@ -126,6 +126,7 @@ export default {
         const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
+        console.log({printer, size});
 
         let pageSize = this.currentFiche.size;
 

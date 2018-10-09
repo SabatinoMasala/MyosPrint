@@ -57,7 +57,7 @@ export default {
 
         let fichesAmount = [];
 
-        if (printer === 'roll' && Object.keys(groupedLabels).length > 0) {
+        if ((printer === 'roll' || printer === 'blackmark') && Object.keys(groupedLabels).length > 0) {
             groupedLabels['neck'] = [];
             Object.keys(groupedLabels).forEach((size) => {
 
@@ -95,6 +95,9 @@ export default {
                 return this.makeClassicPages(labels);
                 break;
             case 'roll':
+                return this.makeRollPages(labels);
+                break;
+            case 'blackmark':
                 return this.makeRollPages(labels);
                 break;
         }

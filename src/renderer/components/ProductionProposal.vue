@@ -45,6 +45,7 @@
     import _ from 'lodash'
     import API from '@/helpers/api'
     import Dir from '@/helpers/Dir'
+    import OpensModals from '@/mixins/OpensModals'
     import FicheMaker from '@/helpers/FicheMaker'
     import PDFMaker from '@/helpers/PDFMaker'
     import Promise from 'bluebird'
@@ -53,6 +54,7 @@
     import PuppeteerDownloader from "../helpers/PuppeteerDownloader";
 
     export default {
+        mixins: [OpensModals],
         watch: {
             '$route': 'updateRoute',
         },
@@ -120,9 +122,6 @@
             updateRoute() {
                 this.productionProposalID = this.$route.params.proposal_id;
                 this.load();
-            },
-            openModal(modal) {
-                this.$store.commit('OPEN_MODAL', modal)
             },
             getLoadingText() {
                 if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
