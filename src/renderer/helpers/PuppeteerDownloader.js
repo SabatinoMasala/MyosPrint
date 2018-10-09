@@ -60,6 +60,7 @@ export default {
                     continue;
                 }
                 myosURL = 'https://www.makeyourownspirit.com/capture?svg=' + downloadObject.svgUrl + '&type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
+                console.log(myosURL);
             } else {
                 DownloadConversionProgress.downloads++;
                 let regex = /[^\/]+\.png/;
@@ -68,7 +69,9 @@ export default {
                     continue;
                 }
                 myosURL = 'https://www.makeyourownspirit.com/capture?type=' + downloadObject.type + '&designed-bottle=' + downloadObject.designedBottle;
+                console.log(myosURL);
             }
+            console.log(myosURL);
 
             await page.goto(myosURL);
             await page.waitFor('.loaded');
