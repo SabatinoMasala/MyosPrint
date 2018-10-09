@@ -29,7 +29,7 @@
                         label="Operations">
                     <template slot-scope="scope">
                         <el-button :disabled="isDisabledButton(scope.$index)" type="primary" size="small" @click="makePDF(scope.$index)">
-                            <span v-if="!isDisabledButton(scope.$index)">Get PDF</span>
+                            <span v-if="!isDisabledButton(scope.$index)">Render PDF again</span>
                             <span v-else>This template is not available</span>
                         </el-button>
                     </template>
@@ -152,12 +152,21 @@
                 this.downloadConversionProgress.totalDownloads = urls.length;
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
+                await this.automaticallyMakePDF();
                 this.loading = false;
                 this.downloadConversionProgress.reset();
             },
+            async automaticallyMakePDF() {
+                const promises = [];
+                this.fiches.forEach(fiche => {
+                    const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size;
+                    promises.push(PDFMaker.makePDF( this.$store, fiche.pages, fiche.size, filename ));
+                });
+                return Promise.all(promises);
+            },
             makePDF(index) {
                 this.loading = true;
-                let filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
+                const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
                 PDFMaker.makePDF( this.$store, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
                     this.loading = false;
                 })

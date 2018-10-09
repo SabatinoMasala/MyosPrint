@@ -92,15 +92,14 @@ export default {
 
         doc.fontSize(7);
 
+        doc.addPage();
+
         let needsInfo = false;
         if (this.currentFiche.settings) {
             needsInfo = !!this.currentFiche.settings.info;
         }
 
         let page = pages[index];
-        if (!!createNewPageFirst) {
-            doc.addPage();
-        }
         let promises = [];
         Object.keys(page).forEach((part) => {
             page[part].forEach((data, index) => {
@@ -119,11 +118,18 @@ export default {
             }
         })
     },
+    addBlackmark(doc) {
+        const blackmark = this.currentFiche.blackmark;
+        doc.addPage();
+        doc.rect(blackmark.x, blackmark.y, blackmark.height, blackmark.width).fill('black');
+    },
     makePDF(store, pages, size, filename) {
 
         const printer = store.state.Settings.printer;
         const blankPagesStart = store.state.Settings.pdf_blank_pages_before_labels;
         const blankPagesEnd = store.state.Settings.pdf_blank_pages_after_labels;
+        const blackmarkPagesStart = store.state.Settings.pdf_blackmark_pages_before_labels;
+        const blackmarkPagesEnd = store.state.Settings.pdf_blackmark_pages_after_labels;
         const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
@@ -132,6 +138,7 @@ export default {
 
         let doc = new PDFDocument({
             margin: 0,
+            autoFirstPage: false,
             size: pageSize
         });
 
@@ -142,8 +149,20 @@ export default {
             }
         }
 
+        if (blackmarkPagesStart !== 0) {
+            for (let i = 0; i < blackmarkPagesStart; i++) {
+                this.addBlackmark(doc);
+            }
+        }
+
         return new Promise((resolve, reject) => {
             this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
+
+                if (blackmarkPagesEnd !== 0) {
+                    for (let i = 0; i < blackmarkPagesEnd; i++) {
+                        this.addBlackmark(doc);
+                    }
+                }
 
                 if (blankPagesEnd !== 0) {
                     for (let i = 0; i < blankPagesEnd; i++) {

@@ -42,6 +42,18 @@
                 </h2>
                 <el-input-number v-model="blankPagesEnd" :min="0"></el-input-number>
             </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blackmark pages start
+                </h2>
+                <el-input-number v-model="blackmarkPagesStart" :min="0"></el-input-number>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blackmark pages end
+                </h2>
+                <el-input-number v-model="blackmarkPagesEnd" :min="0"></el-input-number>
+            </el-col>
         </el-row>
         <el-row class="mt-1">
             <el-col :span="24">
@@ -102,6 +114,26 @@
                 set(value) {
                     if (this.$store.state.Settings.pdf_blank_pages_after_labels !== value) {
                         this.$store.commit('UPDATE_PDF_BLANK_PAGES_AFTER_LABELS', value);
+                    }
+                }
+            },
+            blackmarkPagesStart: {
+                get() {
+                    return this.$store.state.Settings.pdf_blackmark_pages_before_labels
+                },
+                set(value) {
+                    if (this.$store.state.Settings.pdf_blackmark_pages_before_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_BEFORE_LABELS', value);
+                    }
+                }
+            },
+            blackmarkPagesEnd: {
+                get() {
+                    return this.$store.state.Settings.pdf_blackmark_pages_after_labels
+                },
+                set(value) {
+                    if (this.$store.state.Settings.pdf_blackmark_pages_after_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_AFTER_LABELS', value);
                     }
                 }
             },

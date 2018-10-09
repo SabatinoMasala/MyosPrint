@@ -80,9 +80,9 @@ export default {
             let pages = this.makePages(printer, currentLabels);
 
             fichesAmount.push({
-                size: size,
+                size,
                 pages_count: pages.length,
-                pages: pages
+                pages
             })
         });
 
@@ -209,9 +209,19 @@ export default {
                 back: [],
             }];
             let currentPageIndex = 0;
+            let needsNewPage = false;
 
             labels.forEach((label) => {
                 for (let i = 0; i < label.amount; i++) {
+
+                    if (needsNewPage) {
+                        pages.push({
+                            front: [],
+                            back: [],
+                        });
+                        needsNewPage = false;
+                    }
+
                     let regex = /[^\/]+\.(svg|png)/;
 
                     let frontLabelFile = (label.frontLabelSVG && label.frontLabelSVG !== '') ? label.frontLabelSVG : label.frontLabelImage;
@@ -227,15 +237,14 @@ export default {
                     });
 
                     if (pages[currentPageIndex].back.length >= 1 ||  pages[currentPageIndex].front.length >= 1) {
-                        pages.push({
-                            front: [],
-                            back: [],
-                        });
+                        needsNewPage = true;
                         currentPageIndex++;
                     }
 
                 }
             });
+
+            console.log({pages});
 
             return pages;
         }
