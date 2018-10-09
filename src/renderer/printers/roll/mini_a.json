@@ -1,5 +1,11 @@
 {
   "size": [116.504, 291.969],
+  "blackmark": {
+    "width": 10,
+    "height": 10,
+    "x": 0,
+    "y": 0
+  },
   "dimensions": {
     "front": {
       "width": 192.756,

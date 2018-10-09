@@ -34,7 +34,16 @@ export default {
         }
         if (fs.existsSync(file)) {
             let json = fs.readFileSync(file, 'utf-8');
-            return JSON.parse(json);
+            json = JSON.parse(json);
+            if (!json.blackmark) {
+                json.blackmark = {
+                    x: 0,
+                    y: 0,
+                    width: 10,
+                    height: 10
+                };
+            }
+            return json;
         } else {
             return this.getDefault(type, name);
         }

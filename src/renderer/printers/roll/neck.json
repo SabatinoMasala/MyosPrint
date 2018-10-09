@@ -1,5 +1,11 @@
 {
   "size": [620.787, 351.496],
+  "blackmark": {
+    "width": 10,
+    "height": 10,
+    "x": 0,
+    "y": 0
+  },
   "settings": {
     "info": true
   },

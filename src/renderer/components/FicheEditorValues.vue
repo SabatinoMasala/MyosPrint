@@ -7,6 +7,18 @@
             <el-input-number v-model="canvasDimensions[0]"></el-input-number>
             <el-input-number v-model="canvasDimensions[1]"></el-input-number>
 
+            <template v-if="currentPrinter === 'blackmark'">
+                <FicheEditorDimensions
+                        name="blackmark"
+                        :dimensions="blackmark"
+                ></FicheEditorDimensions>
+
+                <FicheEditorBlackmark
+                        :fiche="fiche"
+                        :blackmark="blackmark"
+                ></FicheEditorBlackmark>
+            </template>
+
             <FicheEditorDimensions
                     name="front"
                     :dimensions="dimensionsFront"
@@ -68,14 +80,17 @@
 <script>
     import CanEditFiche from '@/mixins/CanEditFiche'
     import FicheEditorDimensions from '@/components/FicheEditorDimensions'
+    import FicheEditorBlackmark from '@/components/FicheEditorBlackmark'
     import FicheEditorSlot from '@/components/FicheEditorSlot'
     import PDFMaker from '@/helpers/PDFMaker'
     export default {
         mixins: [CanEditFiche],
         props: {
+            currentPrinter: String,
             fiche: Object
         },
         components: {
+            FicheEditorBlackmark,
             FicheEditorDimensions,
             FicheEditorSlot
         }

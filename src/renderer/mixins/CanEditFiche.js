@@ -23,6 +23,9 @@ export default {
         },
         dimensionsNeck() {
             return this.dimensions('neck');
+        },
+        blackmark() {
+            return this.fiche.blackmark;
         }
     },
     methods: {

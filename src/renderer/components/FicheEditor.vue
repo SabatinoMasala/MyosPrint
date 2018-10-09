@@ -38,6 +38,7 @@
         <el-row class="padded" v-if="fiche">
             <div class="fixed">
                 <FicheEditorPage
+                        :current-printer="currentPrinter"
                         ref="page"
                         :fiche="fiche"
                 ></FicheEditorPage>
@@ -45,6 +46,7 @@
             <el-col :span="12">&nbsp;</el-col>
             <el-col :span="12">
                 <FicheEditorValues
+                        :current-printer="currentPrinter"
                         @update="update"
                         :fiche="fiche"
                 ></FicheEditorValues>

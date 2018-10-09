@@ -5,6 +5,7 @@
             <el-input-number :step="0.1" v-model="zoom"></el-input-number>
         </div>
         <div class="page" :style="pageStyle">
+            <div class="blackmark" :style="getStyleBlackmark()" v-if="currentPrinter === 'blackmark'"></div>
             <div class="slot front" v-for="front,index in slotsFront" :style="getStyleFront(front)" v-if="isAvailableType('front')" :class="{active: front.active}">
                 <div class="inner">Front {{ index + 1 }}</div>
             </div>
@@ -22,6 +23,10 @@
         margin: 0 auto;
         border: 1px #008cff solid;
         position: relative;
+        .blackmark {
+            position: absolute;
+            background-color: #000;
+        }
         .slot {
             position: absolute;
             border: 1px #f00 solid;
@@ -43,6 +48,7 @@
     export default {
         mixins: [CanEditFiche],
         props: {
+            currentPrinter: String,
             fiche: Object
         },
         computed: {
@@ -57,6 +63,14 @@
             },
         },
         methods: {
+            getStyleBlackmark() {
+                return {
+                    width: `${this.blackmark.width * this.multiplier}px`,
+                    height: `${this.blackmark.height * this.multiplier}px`,
+                    left: `${this.blackmark.x * this.multiplier}px`,
+                    top: `${this.blackmark.y * this.multiplier}px`
+                }
+            },
             getStyleFront(slot) {
                 if (slot.rotation === 90) {
                     return {

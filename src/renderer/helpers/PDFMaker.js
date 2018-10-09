@@ -122,11 +122,11 @@ export default {
     makePDF(store, pages, size, filename) {
 
         const printer = store.state.Settings.printer;
-        const blankPages = store.state.Settings.pdf_blank_pages_before_labels;
+        const blankPagesStart = store.state.Settings.pdf_blank_pages_before_labels;
+        const blankPagesEnd = store.state.Settings.pdf_blank_pages_after_labels;
         const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
-        console.log({printer, size});
 
         let pageSize = this.currentFiche.size;
 
@@ -136,14 +136,21 @@ export default {
         });
 
         let labelsNeedNewPage = false;
-        if (blankPages !== 0) {
-            for (let i = 0; i < blankPages; i++) {
+        if (blankPagesStart !== 0) {
+            for (let i = 0; i < blankPagesStart; i++) {
                 doc.addPage();
             }
         }
 
         return new Promise((resolve, reject) => {
             this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
+
+                if (blankPagesEnd !== 0) {
+                    for (let i = 0; i < blankPagesEnd; i++) {
+                        doc.addPage();
+                    }
+                }
+
                 let path = Dir.getPDFDir() + '/' + filename;
                 if (size !== 'neck') {
                     path += '_' + orientation;
