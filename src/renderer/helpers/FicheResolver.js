@@ -12,13 +12,27 @@ let FICHES = {
         neck: require('@/printers/roll/neck.json'),
         mini_a: require('@/printers/roll/mini_a.json'),
         mini_b: require('@/printers/roll/mini_b.json'),
+    },
+    blackmark: {
+        b: require('@/printers/blackmark/b.json'),
+        c: require('@/printers/blackmark/c.json'),
+        neck: require('@/printers/blackmark/neck.json'),
+        mini_a: require('@/printers/blackmark/mini_a.json'),
+        mini_b: require('@/printers/blackmark/mini_b.json'),
     }
 };
 
 export default {
     getFiche(type, name) {
 
-        let file = Dir.getFichesRollDir() + '/' + name + '.json';
+        let file = false;
+        if (type === 'roll') {
+            file = Dir.getFichesRollDir() + '/' + name + '.json';
+        } else if (type === 'blackmark') {
+            file = Dir.getFichesBlackmarkDir() + '/' + name + '.json';
+        } else {
+            throw new Error('Printer not found');
+        }
 
         if (fs.existsSync(file)) {
             let json = fs.readFileSync(file, 'utf-8');

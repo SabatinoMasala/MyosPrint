@@ -9,13 +9,12 @@
         </el-menu>
 
         <PPSettings />
-        <QuickSettings />
 
         <div style="margin: 50px;">
             <div class="text-center">
                 <h1>Production proposal <strong style="border-bottom: 1px #000 dashed;">{{ productionProposalID }}</strong></h1>
                 <el-button :disabled="loading" class="mb-1" @click="openModal('modal-settings')">Settings</el-button>
-                <el-button :disabled="loading" class="mb-1" @click="$router.push('/fiche-editor')">Edit roll fiches</el-button>
+                <el-button :disabled="loading" class="mb-1" @click="$router.push('/fiche-editor')">Edit fiches</el-button>
             </div>
             <el-table :data="fiches" empty-text="No fiches" v-loading="loading" :element-loading-text="getLoadingText()">
                 <el-table-column
@@ -50,7 +49,6 @@
     import PDFMaker from '@/helpers/PDFMaker'
     import Promise from 'bluebird'
     import PPSettings from '@/components/PPSettings.vue'
-    import QuickSettings from '@/components/QuickSettings.vue'
     import DownloadConversionProgress from '@/store/DownloadConversionProgress'
     import PuppeteerDownloader from "../helpers/PuppeteerDownloader";
 
@@ -59,8 +57,7 @@
             '$route': 'updateRoute',
         },
         components: {
-            PPSettings,
-            QuickSettings
+            PPSettings
         },
         computed: {
             fiches() {
@@ -157,7 +154,6 @@
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
                 this.loading = false;
-                this.openModal('modal-orientation');
                 this.downloadConversionProgress.reset();
             },
             makePDF(index) {

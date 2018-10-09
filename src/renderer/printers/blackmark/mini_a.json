@@ -1,0 +1,29 @@
+{
+  "size": [116.504, 291.969],
+  "dimensions": {
+    "front": {
+      "width": 192.756,
+      "height": 111.968
+    },
+    "back": {
+      "width": 93.543,
+      "height": 116.504
+    }
+  },
+  "slots": {
+    "front": [
+      {
+        "x": 2.268,
+        "y": 0,
+        "rotation": 90
+      }
+    ],
+    "back": [
+      {
+        "x": 0,
+        "y": 198.425,
+        "rotation": 90
+      }
+    ]
+  }
+}

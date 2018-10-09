@@ -8,7 +8,17 @@
         </el-menu>
 
         <el-row class="padded toolbar">
-            <el-col :span="12">
+            <el-col :span="5">
+                <el-select v-model="currentPrinter">
+                    <el-option
+                            :key="key"
+                            :value="printer.value"
+                            :label="printer.label"
+                            v-for="printer,key in availablePrinters"
+                    ></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="4">
                 <el-select v-model="currentFiche">
                     <el-option
                             :key="key"
@@ -75,17 +85,26 @@
             FicheEditorValues
         },
         mounted() {
-            this.updateFiche()
+            this.updateFiche();
         },
         watch: {
             currentFiche() {
+                this.updateFiche();
+                this.$refs.page.zoom = 1;
+            },
+            currentPrinter() {
                 this.updateFiche();
                 this.$refs.page.zoom = 1;
             }
         },
         methods: {
             reset() {
-                let path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                let path = false;
+                if (this.currentPrinter === 'roll') {
+                    path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                } else if (this.currentPrinter === 'blackmark') {
+                    path = Dir.getFichesBlackmarkDir() + '/' + this.currentFiche + '.json';
+                }
                 if (fs.existsSync(path)) {
                     fs.unlinkSync(path);
                 }
@@ -97,10 +116,15 @@
                 })
             },
             updateFiche() {
-                this.fiche = FicheResolver.getFiche('roll', this.currentFiche);
+                this.fiche = FicheResolver.getFiche(this.currentPrinter, this.currentFiche);
             },
             update() {
-                let path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                let path = false;
+                if (this.currentPrinter === 'roll') {
+                    path = Dir.getFichesRollDir() + '/' + this.currentFiche + '.json';
+                } else if (this.currentPrinter === 'blackmark') {
+                    path = Dir.getFichesBlackmarkDir() + '/' + this.currentFiche + '.json';
+                }
                 fs.writeFile(path, JSON.stringify(this.fiche, null, 2), 'utf8', (err) => {
                     if (err) {
                         this.$notify({
@@ -123,6 +147,17 @@
         },
         data() {
             return {
+                currentPrinter: 'roll',
+                availablePrinters: [
+                    {
+                        value: 'roll',
+                        label: 'Non-blackmark'
+                    },
+                    {
+                        value: 'blackmark',
+                        label: 'Blackmark'
+                    }
+                ],
                 currentFiche: 'b',
                 fiche: false,
                 availableFiches: [
