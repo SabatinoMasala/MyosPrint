@@ -152,17 +152,20 @@
                 this.downloadConversionProgress.totalDownloads = urls.length;
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
-                await this.automaticallyMakePDF();
-                this.loading = false;
                 this.downloadConversionProgress.reset();
+                this.makeNextPdf();
             },
-            async automaticallyMakePDF() {
-                const promises = [];
-                this.fiches.forEach(fiche => {
-                    const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size;
-                    promises.push(PDFMaker.makePDF( this.$store, fiche.pages, fiche.size, filename ));
+            makeNextPdf(index = 0) {
+                console.log('make next pdf', {index});
+                const fiche = this.fiches[index];
+                const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size;
+                PDFMaker.makePDF( this.$store, fiche.pages, fiche.size, filename ).then(() => {
+                    if (this.fiches.length - 1 === index) {
+                        this.loading = false;
+                    } else {
+                        this.makeNextPdf(index + 1);
+                    }
                 });
-                return Promise.all(promises);
             },
             makePDF(index) {
                 this.loading = true;
