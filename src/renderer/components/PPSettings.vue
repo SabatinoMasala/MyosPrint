@@ -28,35 +28,6 @@
         </el-row>
         <el-row class="mt-1">
             <el-col :span="24">
-                <h1>PDF Settings</h1>
-            </el-col>
-            <el-col :span="12">
-                <h2>
-                    Blank pages start
-                </h2>
-                <el-input-number v-model="blankPagesStart" :min="0"></el-input-number>
-            </el-col>
-            <el-col :span="12">
-                <h2>
-                    Blank pages end
-                </h2>
-                <el-input-number v-model="blankPagesEnd" :min="0"></el-input-number>
-            </el-col>
-            <el-col :span="12">
-                <h2>
-                    Blackmark pages start
-                </h2>
-                <el-input-number v-model="blackmarkPagesStart" :min="0"></el-input-number>
-            </el-col>
-            <el-col :span="12">
-                <h2>
-                    Blackmark pages end
-                </h2>
-                <el-input-number v-model="blackmarkPagesEnd" :min="0"></el-input-number>
-            </el-col>
-        </el-row>
-        <el-row class="mt-1">
-            <el-col :span="24">
                 <h1>Label settings</h1>
             </el-col>
             <el-col :span="12">
@@ -88,6 +59,42 @@
                 </el-select>
             </el-col>
         </el-row>
+        <el-row class="mt-1">
+            <el-col :span="24">
+                <h1>PDF Settings</h1>
+                <el-select v-model="currentSize">
+                    <el-option value="b" label="b"></el-option>
+                    <el-option value="c" label="c"></el-option>
+                    <el-option value="mini_a" label="mini_a"></el-option>
+                    <el-option value="mini_b" label="mini_b"></el-option>
+                    <el-option value="neck" label="neck"></el-option>
+                </el-select>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blank pages start
+                </h2>
+                <el-input-number v-model="blankPagesStart" :min="0"></el-input-number>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blank pages end
+                </h2>
+                <el-input-number v-model="blankPagesEnd" :min="0"></el-input-number>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blackmark pages start
+                </h2>
+                <el-input-number v-model="blackmarkPagesStart" :min="0"></el-input-number>
+            </el-col>
+            <el-col :span="12">
+                <h2>
+                    Blackmark pages end
+                </h2>
+                <el-input-number v-model="blackmarkPagesEnd" :min="0"></el-input-number>
+            </el-col>
+        </el-row>
     </el-dialog>
 </template>
 
@@ -99,41 +106,53 @@
             },
             blankPagesStart: {
                 get() {
-                    return this.$store.state.Settings.pdf_blank_pages_before_labels
+                    return this.$store.state.Settings.pdf_settings[this.currentSize].blank_pages_before_labels
                 },
                 set(value) {
-                    if (this.$store.state.Settings.pdf_blank_pages_before_labels !== value) {
-                        this.$store.commit('UPDATE_PDF_BLANK_PAGES_BEFORE_LABELS', value);
+                    if (this.$store.state.Settings.pdf_settings[this.currentSize].blank_pages_before_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLANK_PAGES_BEFORE_LABELS', {
+                            pdf: this.currentSize,
+                            value
+                        });
                     }
                 }
             },
             blankPagesEnd: {
                 get() {
-                    return this.$store.state.Settings.pdf_blank_pages_after_labels
+                    return this.$store.state.Settings.pdf_settings[this.currentSize].blank_pages_after_labels
                 },
                 set(value) {
-                    if (this.$store.state.Settings.pdf_blank_pages_after_labels !== value) {
-                        this.$store.commit('UPDATE_PDF_BLANK_PAGES_AFTER_LABELS', value);
+                    if (this.$store.state.Settings.pdf_settings[this.currentSize].blank_pages_after_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLANK_PAGES_AFTER_LABELS', {
+                            pdf: this.currentSize,
+                            value
+                        });
                     }
                 }
             },
             blackmarkPagesStart: {
                 get() {
-                    return this.$store.state.Settings.pdf_blackmark_pages_before_labels
+                    return this.$store.state.Settings.pdf_settings[this.currentSize].blackmark_pages_before_labels
                 },
                 set(value) {
-                    if (this.$store.state.Settings.pdf_blackmark_pages_before_labels !== value) {
-                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_BEFORE_LABELS', value);
+                    if (this.$store.state.Settings.pdf_settings[this.currentSize].blackmark_pages_before_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_BEFORE_LABELS', {
+                            pdf: this.currentSize,
+                            value
+                        });
                     }
                 }
             },
             blackmarkPagesEnd: {
                 get() {
-                    return this.$store.state.Settings.pdf_blackmark_pages_after_labels
+                    return this.$store.state.Settings.pdf_settings[this.currentSize].blackmark_pages_after_labels
                 },
                 set(value) {
-                    if (this.$store.state.Settings.pdf_blackmark_pages_after_labels !== value) {
-                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_AFTER_LABELS', value);
+                    if (this.$store.state.Settings.pdf_settings[this.currentSize].blackmark_pages_after_labels !== value) {
+                        this.$store.commit('UPDATE_PDF_BLACKMARK_PAGES_AFTER_LABELS', {
+                            pdf: this.currentSize,
+                            value
+                        });
                     }
                 }
             },
@@ -179,6 +198,7 @@
         },
         data() {
             return {
+                currentSize: 'b',
                 printerOptions: [
                     {
                         value: 'classic',

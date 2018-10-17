@@ -91,7 +91,6 @@ export default {
     makeNextPage(orientation, printer, pages, doc, size, index, createNewPageFirst, allDoneCallback) {
 
         doc.fontSize(7);
-
         doc.addPage();
 
         let needsInfo = false;
@@ -102,13 +101,23 @@ export default {
         let page = pages[index];
         let promises = [];
         Object.keys(page).forEach((part) => {
+            const pagePromises = [];
             page[part].forEach((data, index) => {
                 if (this.currentFiche.slots[part] !== undefined) {
-                    let position = this.currentFiche.slots[part][index];
-                    let dimensions = this.currentFiche.dimensions[part];
-                    promises.push(this.addImage(doc, data, position, dimensions, needsInfo, size, orientation))
+                    const position = this.currentFiche.slots[part][index];
+                    const dimensions = this.currentFiche.dimensions[part];
+                    const imagePromise = this.addImage(doc, data, position, dimensions, needsInfo, size, orientation);
+                    promises.push(imagePromise);
+                    pagePromises.push(imagePromise);
                 }
-            })
+            });
+            Promise
+                .all(pagePromises)
+                .then(() => {
+                    if (printer === 'blackmark') {
+                        this.addBlackmark(doc);
+                    }
+                });
         });
         Promise.all(promises).then(() => {
             if (pages.length - 1 > index) {
@@ -118,18 +127,21 @@ export default {
             }
         })
     },
-    addBlackmark(doc) {
+    addBlackmark(doc, newPage = false) {
         const blackmark = this.currentFiche.blackmark;
-        doc.addPage();
+        if (newPage) {
+            doc.addPage();
+        }
         doc.rect(blackmark.x, blackmark.y, blackmark.height, blackmark.width).fill('black');
     },
     makePDF(store, pages, size, filename) {
 
         const printer = store.state.Settings.printer;
-        const blankPagesStart = store.state.Settings.pdf_blank_pages_before_labels;
-        const blankPagesEnd = store.state.Settings.pdf_blank_pages_after_labels;
-        const blackmarkPagesStart = store.state.Settings.pdf_blackmark_pages_before_labels;
-        const blackmarkPagesEnd = store.state.Settings.pdf_blackmark_pages_after_labels;
+        const pdfSettings = store.state.Settings.pdf_settings[size];
+        const blankPagesStart = pdfSettings.blank_pages_before_labels;
+        const blankPagesEnd = pdfSettings.blank_pages_after_labels;
+        const blackmarkPagesStart = pdfSettings.blackmark_pages_before_labels;
+        const blackmarkPagesEnd = pdfSettings.blackmark_pages_after_labels;
         const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
@@ -151,7 +163,7 @@ export default {
 
         if (blackmarkPagesStart !== 0) {
             for (let i = 0; i < blackmarkPagesStart; i++) {
-                this.addBlackmark(doc);
+                this.addBlackmark(doc, true);
             }
         }
 
@@ -160,7 +172,7 @@ export default {
 
                 if (blackmarkPagesEnd !== 0) {
                     for (let i = 0; i < blackmarkPagesEnd; i++) {
-                        this.addBlackmark(doc);
+                        this.addBlackmark(doc, true);
                     }
                 }
 

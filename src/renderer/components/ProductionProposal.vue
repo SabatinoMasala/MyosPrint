@@ -156,7 +156,6 @@
                 this.makeNextPdf();
             },
             makeNextPdf(index = 0) {
-                console.log('make next pdf', {index});
                 const fiche = this.fiches[index];
                 const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size;
                 PDFMaker.makePDF( this.$store, fiche.pages, fiche.size, filename ).then(() => {
