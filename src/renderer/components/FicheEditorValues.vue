@@ -7,16 +7,30 @@
             <el-input-number v-model="canvasDimensions[0]"></el-input-number>
             <el-input-number v-model="canvasDimensions[1]"></el-input-number>
 
-            <template v-if="currentPrinter === 'blackmark'">
-                <FicheEditorDimensions
-                        name="blackmark"
-                        :dimensions="blackmark"
-                ></FicheEditorDimensions>
+            <div class="spacer"></div>
 
-                <FicheEditorBlackmark
-                        :fiche="fiche"
-                        :blackmark="blackmark"
-                ></FicheEditorBlackmark>
+            <template v-if="currentPrinter === 'blackmark'">
+                <div class="mb-1">
+                    <el-button size="small" type="primary" @click.stop.prevent="addBlackmark">Add blackmark</el-button>
+                </div>
+                <template v-for="blackmark, index in blackmarks">
+                    <FicheEditorDimensions
+                            :name="`blackmark ${index + 1}`"
+                            :dimensions="blackmark"
+                            :blackmark="blackmark"
+                    ></FicheEditorDimensions>
+
+                    <FicheEditorBlackmark
+                            :fiche="fiche"
+                            :blackmark="blackmark"
+                    ></FicheEditorBlackmark>
+
+                    <div class="mt-1">
+                        <el-button size="small" type="danger" @click.stop.prevent="deleteBlackmark(blackmark)">Delete blackmark {{ index + 1 }}</el-button>
+                    </div>
+
+                    <div class="spacer"></div>
+                </template>
             </template>
 
             <FicheEditorDimensions
@@ -25,11 +39,15 @@
                     v-if="isAvailableType('front')"
             ></FicheEditorDimensions>
 
+            <div class="spacer"></div>
+
             <FicheEditorDimensions
                     name="back"
                     :dimensions="dimensionsBack"
                     v-if="isAvailableType('back')"
             ></FicheEditorDimensions>
+
+            <div class="spacer"></div>
 
             <FicheEditorDimensions
                     name="neck"
@@ -77,6 +95,14 @@
 
     </div>
 </template>
+<style scoped lang="scss">
+    .spacer {
+        width: 100%;
+        height: 2px;
+        background-color: #ccc;
+        margin: 30px 0;
+    }
+</style>
 <script>
     import CanEditFiche from '@/mixins/CanEditFiche'
     import FicheEditorDimensions from '@/components/FicheEditorDimensions'
@@ -88,6 +114,22 @@
         props: {
             currentPrinter: String,
             fiche: Object
+        },
+        methods: {
+            addBlackmark() {
+                if (!this.fiche.blackmarks) {
+                    this.fiche.blackmarks = [];
+                }
+                this.fiche.blackmarks.push({
+                    x: 0,
+                    y: 0,
+                    width: 10,
+                    height: 10
+                });
+            },
+            deleteBlackmark(blackmark) {
+                this.fiche.blackmarks.splice(this.fiche.blackmarks.indexOf(blackmark), 1);
+            }
         },
         components: {
             FicheEditorBlackmark,

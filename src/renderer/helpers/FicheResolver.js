@@ -35,13 +35,16 @@ export default {
         if (fs.existsSync(file)) {
             let json = fs.readFileSync(file, 'utf-8');
             json = JSON.parse(json);
-            if (!json.blackmark) {
-                json.blackmark = {
+            if (json.blackmark && !json.blackmarks) {
+                json.blackmarks = [json.blackmark];
+            }
+            if (!json.blackmarks) {
+                json.blackmarks = [{
                     x: 0,
                     y: 0,
                     width: 10,
                     height: 10
-                };
+                }];
             }
             return json;
         } else {

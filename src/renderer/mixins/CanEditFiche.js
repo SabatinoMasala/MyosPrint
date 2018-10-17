@@ -24,8 +24,8 @@ export default {
         dimensionsNeck() {
             return this.dimensions('neck');
         },
-        blackmark() {
-            return this.fiche.blackmark;
+        blackmarks() {
+            return this.fiche.blackmarks;
         }
     },
     methods: {

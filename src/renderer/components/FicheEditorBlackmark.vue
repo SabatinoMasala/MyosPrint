@@ -18,11 +18,10 @@
     </el-row>
 </template>
 <script>
-    import CanEditFiche from '@/mixins/CanEditFiche'
     export default {
-        mixins: [CanEditFiche],
         props: {
-            fiche: Object
+            fiche: Object,
+            blackmark: Object
         },
         methods: {
             centerHorizontal() {

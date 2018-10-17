@@ -5,7 +5,7 @@
             <el-input-number :step="0.1" v-model="zoom"></el-input-number>
         </div>
         <div class="page" :style="pageStyle">
-            <div class="blackmark" :style="getStyleBlackmark()" v-if="currentPrinter === 'blackmark'"></div>
+            <div class="blackmark" :style="getStyleBlackmark(blackmark)" v-if="currentPrinter === 'blackmark'" v-for="blackmark in blackmarks"></div>
             <div class="slot front" v-for="front,index in slotsFront" :style="getStyleFront(front)" v-if="isAvailableType('front')" :class="{active: front.active}">
                 <div class="inner">Front {{ index + 1 }}</div>
             </div>
@@ -63,12 +63,12 @@
             },
         },
         methods: {
-            getStyleBlackmark() {
+            getStyleBlackmark(blackmark) {
                 return {
-                    width: `${this.blackmark.width * this.multiplier}px`,
-                    height: `${this.blackmark.height * this.multiplier}px`,
-                    left: `${this.blackmark.x * this.multiplier}px`,
-                    top: `${this.blackmark.y * this.multiplier}px`
+                    width: `${blackmark.width * this.multiplier}px`,
+                    height: `${blackmark.height * this.multiplier}px`,
+                    left: `${blackmark.x * this.multiplier}px`,
+                    top: `${blackmark.y * this.multiplier}px`
                 }
             },
             getStyleFront(slot) {

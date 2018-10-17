@@ -11,6 +11,11 @@
         </el-col>
     </el-row>
 </template>
+<style scoped lang="scss">
+    h2 {
+        margin-top: 0;
+    }
+</style>
 <script>
     export default {
         props: {
