@@ -1,7 +1,7 @@
 {
   "name": "myosprint",
-  "version": "1.1.11",
-  "author": " <>",
+  "version": "1.1.12",
+  "author": "Sabatino Masala",
   "description": "MYOS Print application",
   "license": null,
   "main": "./dist/electron/main.js",
