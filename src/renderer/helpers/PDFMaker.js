@@ -128,11 +128,12 @@ export default {
         })
     },
     addBlackmark(doc, newPage = false) {
-        const blackmark = this.currentFiche.blackmark;
         if (newPage) {
             doc.addPage();
         }
-        doc.rect(blackmark.x, blackmark.y, blackmark.height, blackmark.width).fill('black');
+        this.currentFiche.blackmarks.forEach(blackmark => {
+            doc.rect(blackmark.x, blackmark.y, blackmark.height, blackmark.width).fill('black');
+        });
     },
     makePDF(store, pages, size, filename) {
 
