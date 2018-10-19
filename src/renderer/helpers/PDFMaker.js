@@ -134,10 +134,22 @@ export default {
             doc.rect(blackmark.x, blackmark.y, blackmark.height, blackmark.width).fill('black');
         });
     },
+    addBlackmarks(doc, amount) {
+        for (let i = 0; i < amount; i++) {
+            this.addBlackmark(doc, true);
+        }
+    },
+    addBlanks(doc, amount) {
+        for (let i = 0; i < amount; i++) {
+            doc.addPage();
+        }
+    },
     makePDF(store, pages, size, filename) {
 
         const printer = store.state.Settings.printer;
         const pdfSettings = store.state.Settings.pdf_settings[size];
+        const blackmarkStartFirst = pdfSettings.blackmark_start_first;
+        const blackmarkEndFirst = pdfSettings.blackmark_end_first;
         const blankPagesStart = pdfSettings.blank_pages_before_labels;
         const blankPagesEnd = pdfSettings.blank_pages_after_labels;
         const blackmarkPagesStart = pdfSettings.blackmark_pages_before_labels;
@@ -155,31 +167,23 @@ export default {
         });
 
         let labelsNeedNewPage = false;
-        if (blankPagesStart !== 0) {
-            for (let i = 0; i < blankPagesStart; i++) {
-                doc.addPage();
-            }
-        }
-
-        if (blackmarkPagesStart !== 0) {
-            for (let i = 0; i < blackmarkPagesStart; i++) {
-                this.addBlackmark(doc, true);
-            }
+        if (blackmarkStartFirst) {
+            this.addBlackmarks(doc, blackmarkPagesStart);
+            this.addBlanks(doc, blankPagesStart);
+        } else {
+            this.addBlanks(doc, blankPagesStart);
+            this.addBlackmarks(doc, blackmarkPagesStart);
         }
 
         return new Promise((resolve, reject) => {
             this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
 
-                if (blackmarkPagesEnd !== 0) {
-                    for (let i = 0; i < blackmarkPagesEnd; i++) {
-                        this.addBlackmark(doc, true);
-                    }
-                }
-
-                if (blankPagesEnd !== 0) {
-                    for (let i = 0; i < blankPagesEnd; i++) {
-                        doc.addPage();
-                    }
+                if (blackmarkEndFirst) {
+                    this.addBlackmarks(doc, blackmarkPagesEnd);
+                    this.addBlanks(doc, blankPagesEnd);
+                } else {
+                    this.addBlanks(doc, blankPagesEnd);
+                    this.addBlackmarks(doc, blackmarkPagesEnd);
                 }
 
                 let path = Dir.getPDFDir() + '/' + filename;

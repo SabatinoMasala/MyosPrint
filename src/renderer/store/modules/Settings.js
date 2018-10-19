@@ -5,30 +5,40 @@ const state = {
     orientation: 'tr',
     pdf_settings: {
         b: {
+            blackmark_start_first: true,
+            blackmark_end_first: true,
             blank_pages_before_labels: 0,
             blank_pages_after_labels: 0,
             blackmark_pages_before_labels: 0,
             blackmark_pages_after_labels: 0,
         },
         c: {
+            blackmark_start_first: true,
+            blackmark_end_first: true,
             blank_pages_before_labels: 0,
             blank_pages_after_labels: 0,
             blackmark_pages_before_labels: 0,
             blackmark_pages_after_labels: 0,
         },
         mini_a: {
+            blackmark_start_first: true,
+            blackmark_end_first: true,
             blank_pages_before_labels: 0,
             blank_pages_after_labels: 0,
             blackmark_pages_before_labels: 0,
             blackmark_pages_after_labels: 0,
         },
         mini_b: {
+            blackmark_start_first: true,
+            blackmark_end_first: true,
             blank_pages_before_labels: 0,
             blank_pages_after_labels: 0,
             blackmark_pages_before_labels: 0,
             blackmark_pages_after_labels: 0,
         },
         neck: {
+            blackmark_start_first: true,
+            blackmark_end_first: true,
             blank_pages_before_labels: 0,
             blank_pages_after_labels: 0,
             blackmark_pages_before_labels: 0,
@@ -47,6 +57,8 @@ const mutations = {
             state = Object.assign(state, {
                 printer: settings.printer,
                 orientation: settings.orientation,
+                blackmark_start_first: settings.blackmark_start_first,
+                blackmark_end_first: settings.blackmark_end_first,
                 pdf_settings: Object.assign(state.pdf_settings, settings.pdf_settings),
                 svg_quality: settings.svg_quality,
                 sorting: settings.sorting,
@@ -68,6 +80,14 @@ const mutations = {
     UPDATE_PDF_BLACKMARK_PAGES_BEFORE_LABELS(state, payload) {
         const {pdf, value} = payload;
         state.pdf_settings[pdf].blackmark_pages_before_labels = value;
+    },
+    UPDATE_PDF_BLACKMARK_START_FIRST(state, payload) {
+        const {pdf, value} = payload;
+        state.pdf_settings[pdf].blackmark_start_first = value;
+    },
+    UPDATE_PDF_BLACKMARK_END_FIRST(state, payload) {
+        const {pdf, value} = payload;
+        state.pdf_settings[pdf].blackmark_end_first = value;
     },
     UPDATE_PDF_BLACKMARK_PAGES_AFTER_LABELS(state, payload) {
         const {pdf, value} = payload;
