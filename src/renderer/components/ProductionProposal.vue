@@ -152,8 +152,9 @@
                 this.downloadConversionProgress.totalDownloads = urls.length;
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
-                this.downloadConversionProgress.reset();
-                this.makeNextPdf();
+                // this.downloadConversionProgress.reset();
+                // this.makeNextPdf();
+                this.loading = false;
             },
             makeNextPdf(index = 0) {
                 const fiche = this.fiches[index];

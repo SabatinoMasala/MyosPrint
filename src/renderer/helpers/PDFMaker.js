@@ -18,13 +18,12 @@ export default {
     },
     addImage(doc, data, position, dimensions, needsInfo, size, orientation) {
 
-        let margin = 5;
-        let image = data.image;
+        const margin = position.info_margin;
+        const image = data.image;
 
-        let textArray = data.text;
+        const textArray = data.text;
 
-        let width = dimensions.width;
-        let height = dimensions.height;
+        const {width, height} = dimensions;
         let printerRotation = 0;
         if (size !== 'neck' && orientation === 'tl') {
             printerRotation = 180;
@@ -46,22 +45,22 @@ export default {
                                     y: position.y
                                 });
 
-                                if (needsInfo) {
-                                    this.addText(doc, textArray, position.x, position.y + width + margin);
-                                }
-
                             } else {
                                 doc.image(data, {
-                                    width: width,
-                                    height: height,
+                                    width,
+                                    height,
                                     x: position.x,
                                     y: position.y
                                 });
 
-                                if (needsInfo) {
-                                    this.addText(doc, textArray, position.x, position.y + width + margin);
-                                }
+                            }
 
+                            if (needsInfo) {
+                                if (position.info_position === 'bottom') {
+                                    this.addText(doc, textArray, position.x, position.y + width + margin);
+                                } else if (position.info_position === 'top') {
+                                    this.addText(doc, textArray, position.x, position.y - height - margin);
+                                }
                             }
 
                             resolve()
