@@ -12,14 +12,18 @@
             <div class="slot back" v-for="back,index in slotsBack" :style="getStyleBack(back)" v-if="isAvailableType('back')" :class="{active: back.active}">
                 <div class="inner">Back {{ index + 1 }}</div>
             </div>
-            <div class="slot neck" v-for="neck,index in slotsNeck" :style="getStyleNeck(neck)" v-if="isAvailableType('neck')" :class="{active: neck.active}">
-                <div class="inner">Neck {{ index + 1 }}</div>
-            </div>
+            <template v-for="neck,index in slotsNeck" v-if="isAvailableType('neck')">
+                <div class="slot neck" :style="getStyleNeck(neck)" :class="{active: neck.active}">
+                    <div class="inner">Neck {{ index + 1 }}</div>
+                    <div class="info" :style="getStyleInfo(neck)"></div>
+                </div>
+            </template>
         </div>
     </div>
 </template>
 <style lang="scss" scoped>
     .page {
+        overflow: hidden;
         margin: 0 auto;
         border: 1px #008cff solid;
         position: relative;
@@ -63,6 +67,25 @@
             },
         },
         methods: {
+            getStyleInfo(slot) {
+                if (!this.hasInfo) {
+                    return null;
+                }
+                const retval = {
+                    position: 'absolute',
+                    border: '1px #000 solid',
+                    width: (this.dimensionsNeck.height * this.multiplier) + 'px',
+                    height: (this.dimensionsNeck.height * this.multiplier) + 'px'
+                };
+                if (slot.info_position === 'bottom') {
+                    retval.right = `-${slot.info_margin}px`;
+                    retval.transform = 'translate(100%, 0)';
+                } else {
+                    retval.left = `-${slot.info_margin}px`;
+                    retval.transform = 'translate(-100%, 0)';
+                }
+                return retval;
+            },
             getStyleBlackmark(blackmark) {
                 return {
                     width: `${blackmark.width * this.multiplier}px`,

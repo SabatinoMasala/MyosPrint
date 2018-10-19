@@ -26,6 +26,12 @@ export default {
         },
         blackmarks() {
             return this.fiche.blackmarks;
+        },
+        hasInfo() {
+            if (!this.fiche.settings) {
+                return false;
+            }
+            return !!this.fiche.settings.info;
         }
     },
     methods: {

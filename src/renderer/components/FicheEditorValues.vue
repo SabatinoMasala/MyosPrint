@@ -22,38 +22,43 @@
 
                     <FicheEditorBlackmark
                             :fiche="fiche"
+                            @delete="deleteBlackmark(blackmark)"
                             :blackmark="blackmark"
                     ></FicheEditorBlackmark>
-
-                    <div class="mt-1">
-                        <el-button size="small" type="danger" @click.stop.prevent="deleteBlackmark(blackmark)">Delete blackmark {{ index + 1 }}</el-button>
-                    </div>
 
                     <div class="spacer"></div>
                 </template>
             </template>
 
-            <FicheEditorDimensions
+            <template
+                v-if="isAvailableType('front')"
+            >
+                <FicheEditorDimensions
                     name="front"
                     :dimensions="dimensionsFront"
-                    v-if="isAvailableType('front')"
-            ></FicheEditorDimensions>
+                ></FicheEditorDimensions>
+                <div class="spacer"></div>
+            </template>
 
-            <div class="spacer"></div>
+            <template
+                v-if="isAvailableType('back')"
+            >
+                <FicheEditorDimensions
+                        name="back"
+                        :dimensions="dimensionsBack"
+                        v-if="isAvailableType('back')"
+                ></FicheEditorDimensions>
+                <div class="spacer"></div>
+            </template>
 
-            <FicheEditorDimensions
-                    name="back"
-                    :dimensions="dimensionsBack"
-                    v-if="isAvailableType('back')"
-            ></FicheEditorDimensions>
-
-            <div class="spacer"></div>
-
-            <FicheEditorDimensions
+            <template
+                v-if="isAvailableType('neck')"
+            >
+                <FicheEditorDimensions
                     name="neck"
                     :dimensions="dimensionsNeck"
-                    v-if="isAvailableType('neck')"
-            ></FicheEditorDimensions>
+                ></FicheEditorDimensions>
+            </template>
 
         </div>
 
@@ -83,11 +88,14 @@
 
         <div v-if="isAvailableType('neck')">
             <h1>Slots neck</h1>
+            <el-button size="small" type="primary" @click.stop.prevent="addSlot('neck')">Add slot</el-button>
             <FicheEditorSlot
                     :index="index"
                     :fiche="fiche"
                     name="neck"
                     :key="index"
+                    :can-delete="true"
+                    @delete="deleteSlot('neck', slot)"
                     :current-slot="slot"
                     v-for="slot, index in slotsNeck"
             ></FicheEditorSlot>
@@ -116,6 +124,16 @@
             fiche: Object
         },
         methods: {
+            deleteSlot(type, slot) {
+                const slotsArray = this.fiche.slots[type];
+                slotsArray.splice(slotsArray.indexOf(slot), 1);
+            },
+            addSlot(type) {
+                const slotsArray = this.fiche.slots[type];
+                const newSlot = Object.assign({}, slotsArray[slotsArray.length - 1]);
+                newSlot.x += 20;
+                slotsArray.push(newSlot);
+            },
             addBlackmark() {
                 if (!this.fiche.blackmarks) {
                     this.fiche.blackmarks = [];

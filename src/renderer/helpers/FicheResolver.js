@@ -46,6 +46,17 @@ export default {
                     height: 10
                 }];
             }
+            Object.keys(json.slots).forEach(slotType => {
+                json.slots[slotType] = json.slots[slotType].map(slot => {
+                    if (!slot.info_position) {
+                        slot.info_position = 'bottom';
+                    }
+                    if (!slot.info_margin) {
+                        slot.info_margin = 5;
+                    }
+                    return slot;
+                });
+            });
             return json;
         } else {
             return this.getDefault(type, name);

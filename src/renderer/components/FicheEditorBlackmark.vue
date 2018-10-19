@@ -4,6 +4,7 @@
         <el-col :span="24">
             <el-button @click="centerVertical" size="small">Center Vertical</el-button>
             <el-button @click="centerHorizontal" size="small">Center Horizontal</el-button>
+            <el-button size="small" type="danger" @click.stop.prevent="$emit('delete')">Delete blackmark</el-button>
         </el-col>
         <el-col :span="12">
             <p>
