@@ -1,10 +1,15 @@
 import Vue from 'vue'
 import _ from 'lodash'
 import Dir from '@/helpers/Dir'
+import FicheResolver from '@/helpers/FicheResolver'
 
 export default {
 
     getFichesFromLabels(printer, sorting, labels) {
+
+        const fiches = {
+            neck: FicheResolver.getFiche(printer, 'neck')
+        };
 
         if (sorting === 'labelling') {
             labels = _.orderBy(labels, function(item) {
@@ -77,7 +82,7 @@ export default {
 
         Object.keys(groupedLabels).map((size) => {
             let currentLabels = groupedLabels[size];
-            let pages = this.makePages(printer, currentLabels);
+            let pages = this.makePages(printer, currentLabels, fiches);
 
             fichesAmount.push({
                 size,
@@ -88,21 +93,21 @@ export default {
 
         return fichesAmount;
     },
-    makePages(printer, labels) {
+    makePages(printer, labels, fiches) {
 
         switch (printer) {
             case 'classic':
-                return this.makeClassicPages(labels);
+                return this.makeClassicPages(labels, fiches);
                 break;
             case 'roll':
-                return this.makeRollPages(labels);
+                return this.makeRollPages(labels, fiches);
                 break;
             case 'blackmark':
-                return this.makeRollPages(labels);
+                return this.makeRollPages(labels, fiches);
                 break;
         }
     },
-    makeClassicPages(labels) {
+    makeClassicPages(labels, fiches) {
 
         let pages = [{
             front: [],
@@ -149,7 +154,9 @@ export default {
 
         return pages;
     },
-    makeRollPages(labels) {
+    makeRollPages(labels, fiches) {
+
+        const neckFiche = fiches.neck;
 
         if (labels && labels.length > 0 && labels[0].is_neck !== undefined && labels[0].is_neck === true) {
 
@@ -190,7 +197,7 @@ export default {
 
                     combinations[combo].count++;
 
-                    if (pages[currentPageIndex].neck.length >= 12) {
+                    if (pages[currentPageIndex].neck.length >= neckFiche.slots.neck.length) {
                         pages.push({
                             neck: []
                         });
