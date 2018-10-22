@@ -94,7 +94,7 @@
                 </h2>
                 <el-input-number v-model="blackmarkPagesEnd" :min="0"></el-input-number>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="24">
                 <h2>Blackmark / blanco order</h2>
                 <el-checkbox label="Blackmark first at the start" v-model="blackmark_start_first" />
                 <el-checkbox label="Blackmark first at the end" v-model="blackmark_end_first" />
