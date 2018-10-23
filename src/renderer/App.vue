@@ -13,7 +13,13 @@
         },
         mounted() {
             this.$store.subscribe((mutation, state) => {
-                store.set('settings', state.Settings);
+                store.set('settings', {
+                    printer: state.Settings.printer
+                });
+                store.set('settings_roll_b2c', state.Settings.config.roll.b2c);
+                store.set('settings_roll_b2b', state.Settings.config.roll.b2b);
+                store.set('settings_blackmark_b2c', state.Settings.config.blackmark.b2c);
+                store.set('settings_blackmark_b2b', state.Settings.config.blackmark.b2b);
             });
         }
     }

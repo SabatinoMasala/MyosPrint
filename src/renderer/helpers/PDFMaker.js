@@ -6,7 +6,7 @@ import Dir from '@/helpers/Dir'
 import FicheResolver from '@/helpers/FicheResolver'
 const shell = require('electron').shell;
 
-export default {
+const PDFMaker = {
     addText(doc, textArray, x, y) {
         textArray.forEach((text, index) => {
             if (index === 0) {
@@ -118,13 +118,15 @@ export default {
                     }
                 });
         });
-        Promise.all(promises).then(() => {
-            if (pages.length - 1 > index) {
-                this.makeNextPage(orientation, printer, pages, doc, size, index + 1, true, allDoneCallback)
-            } else {
-                allDoneCallback();
-            }
-        })
+        return Promise
+            .all(promises)
+            .then(() => {
+                if (pages.length - 1 > index) {
+                    this.makeNextPage(orientation, printer, pages, doc, size, index + 1, true, allDoneCallback)
+                } else {
+                    allDoneCallback();
+                }
+            })
     },
     addBlackmark(doc, newPage = false) {
         if (newPage) {
@@ -144,17 +146,15 @@ export default {
             doc.addPage();
         }
     },
-    makePDF(store, pages, size, filename) {
+    makePDF(config, pages, size) {
 
-        const printer = store.state.Settings.printer;
-        const pdfSettings = store.state.Settings.pdf_settings[size];
+        const {printer, pdfSettings, orientation, filename} = config;
         const blackmarkStartFirst = pdfSettings.blackmark_start_first;
         const blackmarkEndFirst = pdfSettings.blackmark_end_first;
         const blankPagesStart = pdfSettings.blank_pages_before_labels;
         const blankPagesEnd = pdfSettings.blank_pages_after_labels;
         const blackmarkPagesStart = pdfSettings.blackmark_pages_before_labels;
         const blackmarkPagesEnd = pdfSettings.blackmark_pages_after_labels;
-        const orientation = store.state.Settings.orientation;
 
         this.currentFiche = FicheResolver.getFiche(printer, size);
 
@@ -175,8 +175,9 @@ export default {
             this.addBlackmarks(doc, blackmarkPagesStart);
         }
 
-        return new Promise((resolve, reject) => {
-            this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
+        return new Promise((resolve, reject, onCancel) => {
+
+            const pagePromise = this.makeNextPage(orientation, printer, pages, doc, size, 0, labelsNeedNewPage, () => {
 
                 if (blackmarkEndFirst) {
                     this.addBlackmarks(doc, blackmarkPagesEnd);
@@ -199,6 +200,12 @@ export default {
                     resolve();
                 })
             });
+
+            onCancel(() => {
+                console.warn('[pdfmaker] promise was cancelled');
+                pagePromise.cancel();
+            });
+
         });
     },
     makeSamplePage(template, doc, callback) {
@@ -237,4 +244,6 @@ export default {
             });
         });
     }
-}
+};
+
+export default PDFMaker;

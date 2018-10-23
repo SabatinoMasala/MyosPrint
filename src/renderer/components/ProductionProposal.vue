@@ -62,8 +62,24 @@
             PPSettings
         },
         computed: {
+            b2bOrB2c() {
+                if (this.productionProposal) {
+                    if (this.productionProposal.is_b2b) {
+                        return 'b2b';
+                    }
+                }
+                return 'b2c';
+            },
+            settings() {
+                return this.$store.state.Settings.config[this.printer][this.b2bOrB2c];
+            },
+            printer() {
+                return this.$store.state.Settings.printer;
+            },
             fiches() {
-                return FicheMaker.getFichesFromLabels(this.$store.state.Settings.printer, this.$store.state.Settings.sorting, this.labels)
+                const printer = this.printer;
+                const sorting = this.settings.sorting;
+                return FicheMaker.getFichesFromLabels(printer, sorting, this.labels)
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
@@ -100,9 +116,27 @@
             }
         },
         mounted() {
+            document.addEventListener('keydown', this.keyHandler);
             this.load();
         },
+        beforeDestroy() {
+            document.removeEventListener('keydown', this.keyHandler);
+        },
         methods: {
+            keyHandler(e) {
+                if (e.keyCode === 27) {
+                    this.cancelActionsIfNeeded();
+                }
+            },
+            cancelActionsIfNeeded() {
+                if (this.downloadConversionProgress.currentProcedure === 'PDF') {
+                    this.downloadConversionProgress.currentProcedure = 'cancel';
+                    this.currentPdfPromise.cancel();
+                } else if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
+                    this.downloadConversionProgress.currentProcedure = 'cancel';
+                    this.downloadConversionProgress.cancelled = true;
+                }
+            },
             load() {
                 this.loading = true;
                 this.downloadConversionProgress.reset();
@@ -114,9 +148,20 @@
                 this.$http.get(API + '/production-proposals/' + this.productionProposalID)
                     .then((response) => {
                         this.productionProposal = response.data['production-proposal'];
-                        this.captureSVGs();
+                        return this.captureSVGs();
+                    })
+                    .then(() => {
+                        this.downloadConversionProgress.reset();
+                        this.makeNextPdf();
                     })
                     .catch((error) => {
+                        console.error(error);
+                        this.goHome();
+                        this.$notify({
+                            title: 'Error',
+                            message: 'Download has been cancelled, returning back home',
+                            type: 'error',
+                        });
                     })
             },
             updateRoute() {
@@ -126,6 +171,14 @@
             getLoadingText() {
                 if (this.downloadConversionProgress.currentProcedure === 'DOWNLOAD') {
                     return 'Downloading & converting: ' + this.downloadConversionProgress.downloads + '/' + this.downloadConversionProgress.totalDownloads;
+                } else if (this.downloadConversionProgress.currentProcedure === 'PDF') {
+                    if (this.downloadConversionProgress.currentPDF !== false) {
+                        return `Making PDF ${this.downloadConversionProgress.currentPDF}`;
+                    } else {
+                        return 'Making PDFs';
+                    }
+                } else if (this.downloadConversionProgress.currentProcedure === 'cancel') {
+                    return 'Cancelling';
                 } else {
                     return 'Loading';
                 }
@@ -152,26 +205,67 @@
                 this.downloadConversionProgress.totalDownloads = urls.length;
                 this.downloadConversionProgress.currentProcedure = 'DOWNLOAD';
                 await PuppeteerDownloader.downloadSVGs(this.labels, this.$store);
-                this.downloadConversionProgress.reset();
-                this.makeNextPdf();
             },
             makeNextPdf(index = 0) {
                 const fiche = this.fiches[index];
-                const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size;
-                PDFMaker.makePDF( this.$store, fiche.pages, fiche.size, filename ).then(() => {
-                    if (this.fiches.length - 1 === index) {
-                        this.loading = false;
-                    } else {
-                        this.makeNextPdf(index + 1);
-                    }
+                const config = {
+                    printer: this.printer,
+                    pdfSettings: this.settings.pdf_settings[fiche.size],
+                    orientation: this.settings.orientation,
+                    filename: this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + fiche.size + '_' + this.b2bOrB2c.toUpperCase()
+                };
+                this.downloadConversionProgress.currentProcedure = 'PDF';
+                this.downloadConversionProgress.currentPDF = fiche.size;
+                this.currentPdfPromise = PDFMaker
+                    .makePDF( config, fiche.pages, fiche.size )
+                    .then(() => {
+                        if (this.fiches.length - 1 === index) {
+                            this.loading = false;
+                            this.downloadConversionProgress.reset();
+                        } else {
+                            this.makeNextPdf(index + 1);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                    .finally(() => {
+                        if (this.currentPdfPromise.isCancelled()) {
+                            this.afterPdfCancel();
+                        }
+                    });
+            },
+            afterPdfCancel() {
+                this.$notify({
+                    title: 'Warning',
+                    message: 'Rendering has been cancelled',
+                    type: 'warning',
                 });
+                this.loading = false;
+                this.downloadConversionProgress.reset();
             },
             makePDF(index) {
                 this.loading = true;
-                const filename = this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size;
-                PDFMaker.makePDF( this.$store, this.fiches[index].pages, this.fiches[index].size, filename ).then(() => {
-                    this.loading = false;
-                })
+                const fiche = this.fiches[index];
+                this.downloadConversionProgress.currentProcedure = 'PDF';
+                this.downloadConversionProgress.currentPDF = fiche.size;
+                const config = {
+                    printer: this.printer,
+                    pdfSettings: this.settings.pdf_settings[fiche.size],
+                    orientation: this.settings.orientation,
+                    filename: this.$store.state.Settings.printer + '_' + this.productionProposalID + '_' + this.fiches[index].size + '_' + this.b2bOrB2c.toUpperCase()
+                };
+                this.currentPdfPromise = PDFMaker
+                    .makePDF( config, this.fiches[index].pages, this.fiches[index].size )
+                    .then(() => {
+                        this.loading = false;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                    .finally(() => {
+                        this.afterPdfCancel();
+                    });
             },
             goHome() {
                 this.$router.push({
@@ -181,6 +275,7 @@
         },
         data() {
             return {
+                currentPdfPromise: false,
                 downloadConversionProgress: DownloadConversionProgress,
                 loading: false,
                 productionProposalID: this.$route.params.proposal_id,

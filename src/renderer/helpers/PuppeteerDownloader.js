@@ -48,6 +48,11 @@ export default {
 
         for (let downloadObject of downloadObjects) {
 
+            if (DownloadConversionProgress.cancelled) {
+                console.warn('download cancelled');
+                throw new Error('Download cancelled');
+            }
+
             let myosURL = '';
             let dest = '';
             // Older designed bottles don't have an SVG

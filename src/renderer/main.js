@@ -5,6 +5,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import deeplink from '@/router/deeplink'
 import {ipcRenderer} from 'electron';
+import Promise from 'bluebird';
 
 import App from './App.vue'
 import router from './router'
@@ -20,6 +21,9 @@ import store from './store'
 function setup() {
     Vue.use(ElementUI);
     Dir.setup();
+    Promise.config({
+        cancellation: true
+    });
 
     if (!process.env.IS_WEB) Vue.use(require('vue-electron'));
 

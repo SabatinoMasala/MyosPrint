@@ -251,8 +251,6 @@ export default {
                 }
             });
 
-            console.log({pages});
-
             return pages;
         }
 
