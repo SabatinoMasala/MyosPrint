@@ -12,13 +12,15 @@ export default function(key) {
             mini_b: PDFConfig(pdfSettings.mini_b),
             neck: PDFConfig(pdfSettings.neck)
         },
-        sorting: 'labelling'
+        sorting: 'labelling',
+        reversed: false
     };
     const overrides = {};
     if (settings) {
         if (settings.orientation) { overrides.orientation = settings.orientation; }
         if (settings.pdf_settings) { overrides.pdf_settings = settings.pdf_settings; }
         if (settings.sorting) { overrides.sorting = settings.sorting; }
+        if (settings.reversed) { overrides.reversed = settings.reversed; }
     }
     return Object.assign(defaults, overrides);
 }

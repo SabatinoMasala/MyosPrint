@@ -79,7 +79,8 @@
             fiches() {
                 const printer = this.printer;
                 const sorting = this.settings.sorting;
-                return FicheMaker.getFichesFromLabels(printer, sorting, this.labels)
+                const reversed = this.settings.reversed;
+                return FicheMaker.getFichesFromLabels(printer, sorting, this.labels, reversed)
             },
             labels() {
                 return this.bottleProposals.map((proposal) => {
@@ -152,7 +153,12 @@
                     })
                     .then(() => {
                         this.downloadConversionProgress.reset();
-                        this.makeNextPdf();
+                        console.log(this.$route.query);
+                        if (this.$route.query.shouldAutoDownload) {
+                            this.makeNextPdf();
+                        } else {
+                            this.loading = false;
+                        }
                     })
                     .catch((error) => {
                         console.error(error);
@@ -264,7 +270,9 @@
                         console.log(err);
                     })
                     .finally(() => {
-                        this.afterPdfCancel();
+                        if (this.currentPdfPromise.isCancelled()) {
+                            this.afterPdfCancel();
+                        }
                     });
             },
             goHome() {

@@ -46,7 +46,7 @@ const mutations = {
         const {pdf, value, b2bOrB2c, printer} = payload;
         state.config[printer][b2bOrB2c].pdf_settings[pdf].blackmark_pages_after_labels = value;
     },
-    SWITCH_PRINTER(state, value) {
+    UPDATE_PRINTER(state, value) {
         switch (value) {
             case 'roll':
                 state.printer = 'roll';
@@ -56,13 +56,17 @@ const mutations = {
                 break;
         }
     },
-    SWITCH_ORIENTATION(state, payload) {
+    UPDATE_ORIENTATION(state, payload) {
         const {pdf, value, b2bOrB2c, printer} = payload;
         state.config[printer][b2bOrB2c].orientation = value;
     },
-    SWITCH_SORTING(state, payload) {
+    UPDATE_SORTING(state, payload) {
         const {pdf, value, b2bOrB2c, printer} = payload;
         state.config[printer][b2bOrB2c].sorting = value;
+    },
+    UPDATE_REVERSED(state, payload) {
+        const {pdf, value, b2bOrB2c, printer} = payload;
+        state.config[printer][b2bOrB2c].reversed = value;
     }
 };
 

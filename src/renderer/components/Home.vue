@@ -20,6 +20,11 @@
                     </el-button>
                 </el-col>
             </el-row>
+            <el-row :gutter="10" class="mt-1">
+                <el-col :span="12" :offset="2">
+                    <el-checkbox label="Automatically start downloading" v-model="shouldAutoDownload"></el-checkbox>
+                </el-col>
+            </el-row>
             <div v-if="history.length > 0">
                 <el-card class="history">
                     <div slot="header">History</div>
@@ -85,6 +90,9 @@
                     name: 'pp-detail',
                     params: {
                         proposal_id: item
+                    },
+                    query: {
+                        shouldAutoDownload: this.shouldAutoDownload
                     }
                 }
             },
@@ -100,6 +108,9 @@
                             name: 'pp-detail',
                             params: {
                                 proposal_id: this.productionProposalID
+                            },
+                            query: {
+                                shouldAutoDownload: this.shouldAutoDownload
                             }
                         })
                     })
@@ -115,6 +126,7 @@
         },
         data() {
             return {
+                shouldAutoDownload: true,
                 history: store.get('pp-history') || [],
                 isLoading: false,
                 productionProposalID: ''

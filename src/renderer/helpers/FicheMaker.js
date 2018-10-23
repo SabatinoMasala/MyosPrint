@@ -5,7 +5,7 @@ import FicheResolver from '@/helpers/FicheResolver'
 
 export default {
 
-    getFichesFromLabels(printer, sorting, labels) {
+    getFichesFromLabels(printer, sorting, labels, reversed = false) {
 
         const fiches = {
             neck: FicheResolver.getFiche(printer, 'neck')
@@ -52,6 +52,10 @@ export default {
                     item.proposal.order.order.timestamp
                 ]);
             });
+        }
+
+        if (reversed) {
+            labels = labels.reverse();
         }
 
         // labels.forEach((label) => {

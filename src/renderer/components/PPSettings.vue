@@ -68,6 +68,7 @@
                             :value="item.value">
                     </el-option>
                 </el-select>
+                <el-checkbox label="Reversed" v-model="reversed"></el-checkbox>
             </el-col>
         </el-row>
         <el-row class="mt-1">
@@ -119,12 +120,25 @@
 <script>
     export default {
         computed: {
+            reversed: {
+                get() {
+                    return this.settings.reversed;
+                },
+                set(value) {
+                    this.$store.commit('UPDATE_REVERSED', {
+                        pdf: this.currentSize,
+                        printer: this.printer,
+                        b2bOrB2c: this.b2bOrB2c,
+                        value
+                    });
+                }
+            },
             isPrinterDefault: {
                 get() {
                     return this.$store.state.Settings.printer === this.printer;
                 },
                 set(value) {
-                    this.$store.commit('SWITCH_PRINTER', this.printer);
+                    this.$store.commit('UPDATE_PRINTER', this.printer);
                 }
             },
             settings() {
@@ -201,7 +215,7 @@
                     return this.settings.orientation
                 },
                 set(value) {
-                    this.$store.commit('SWITCH_ORIENTATION', {
+                    this.$store.commit('UPDATE_ORIENTATION', {
                         pdf: this.currentSize,
                         printer: this.printer,
                         b2bOrB2c: this.b2bOrB2c,
@@ -214,7 +228,7 @@
                     return this.settings.sorting
                 },
                 set(value) {
-                    this.$store.commit('SWITCH_SORTING', {
+                    this.$store.commit('UPDATE_SORTING', {
                         pdf: this.currentSize,
                         printer: this.printer,
                         b2bOrB2c: this.b2bOrB2c,

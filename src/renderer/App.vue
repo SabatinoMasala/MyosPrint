@@ -8,6 +8,14 @@
     import store from 'store';
     export default {
         name: 'myosprint',
+        watch: {
+            '$route': {
+                handler() {
+                    console.warn('Navigating', {route: this.$route});
+                },
+                immediate: true
+            }
+        },
         beforeCreate() {
             this.$store.commit('INIT_SETTINGS');
         },
