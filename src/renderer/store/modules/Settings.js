@@ -27,7 +27,7 @@ const mutations = {
         state.config[printer][b2bOrB2c].pdf_settings[pdf].blank_pages_before_labels = value;
     },
     UPDATE_PDF_BLANK_PAGES_AFTER_LABELS(state, payload) {
-        const {pdf, value} = payload;
+        const {pdf, value, printer, b2bOrB2c} = payload;
         state.config[printer][b2bOrB2c].pdf_settings[pdf].blank_pages_after_labels = value;
     },
     UPDATE_PDF_BLACKMARK_PAGES_BEFORE_LABELS(state, payload) {
