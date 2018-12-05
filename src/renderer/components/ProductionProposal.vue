@@ -155,7 +155,6 @@
                     .then(() => {
                         this.downloadConversionProgress.reset();
                         const shouldAutoDownload = store.get('should_auto_download') !== undefined ? store.get('should_auto_download') : true;
-                        debugger;
                         if (shouldAutoDownload) {
                             this.makeNextPdf();
                         } else {
