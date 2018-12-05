@@ -79,7 +79,9 @@ export default {
                     if (neckLabel.neckLabelSVG === '' || neckLabel.neckLabelImage === '') {
                         neckLabel.empty = true;
                     }
-                    groupedLabels['neck'].push(neckLabel);
+                    if (label.size.indexOf('mini') === -1) {
+                        groupedLabels['neck'].push(neckLabel);
+                    }
                 });
             });
         }

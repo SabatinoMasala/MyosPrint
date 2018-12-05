@@ -17,7 +17,7 @@ const state = {
 
 const mutations = {
     INIT_SETTINGS(state) {
-        const settings = store.get('settings');
+        const settings = store.get('settings') || {};
         const overrides = {};
         if (settings.printer) { overrides.printer = settings.printer; }
         state = Object.assign(state, overrides);

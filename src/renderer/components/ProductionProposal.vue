@@ -41,6 +41,7 @@
 </template>
 <script>
 
+    import store from 'store'
     import sharp from 'sharp'
     import _ from 'lodash'
     import API from '@/helpers/api'
@@ -153,8 +154,9 @@
                     })
                     .then(() => {
                         this.downloadConversionProgress.reset();
-                        console.log(this.$route.query);
-                        if (this.$route.query.shouldAutoDownload) {
+                        const shouldAutoDownload = store.get('should_auto_download') !== undefined ? store.get('should_auto_download') : true;
+                        debugger;
+                        if (shouldAutoDownload) {
                             this.makeNextPdf();
                         } else {
                             this.loading = false;

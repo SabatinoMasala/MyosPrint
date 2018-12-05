@@ -79,7 +79,10 @@
                 return this.productionProposalID.length > 0
             }
         },
-        mounted() {
+        watch: {
+            shouldAutoDownload(value) {
+                store.set('should_auto_download', value);
+            }
         },
         methods: {
             getVersion() {
@@ -90,9 +93,6 @@
                     name: 'pp-detail',
                     params: {
                         proposal_id: item
-                    },
-                    query: {
-                        shouldAutoDownload: this.shouldAutoDownload
                     }
                 }
             },
@@ -108,9 +108,6 @@
                             name: 'pp-detail',
                             params: {
                                 proposal_id: this.productionProposalID
-                            },
-                            query: {
-                                shouldAutoDownload: this.shouldAutoDownload
                             }
                         })
                     })
@@ -123,6 +120,12 @@
                         this.isLoading = false;
                     })
             }
+        },
+        mounted() {
+            if (store.get('should_auto_download') === undefined) {
+                store.set('should_auto_download', true);
+            }
+            this.shouldAutoDownload = store.get('should_auto_download');
         },
         data() {
             return {
